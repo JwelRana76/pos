@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\BankController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DistrictController;
@@ -98,6 +99,12 @@ Route::middleware('auth')->group(function () {
         Route::post('/store', [AccountController::class, 'store'])->name('store');
         Route::get('/edit/{id}', [AccountController::class, 'edit'])->name('edit');
         Route::get('/delete/{id}', [AccountController::class, 'delete'])->name('delete');
+    });
+    Route::group(['prefix' => 'accounting/bank', 'as' => 'bank.'], function () {
+        Route::get('/', [BankController::class, 'index'])->name('index');
+        Route::post('/store', [BankController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [BankController::class, 'edit'])->name('edit');
+        Route::get('/delete/{id}', [BankController::class, 'delete'])->name('delete');
     });
 });
 

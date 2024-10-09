@@ -2,51 +2,52 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Account;
-use App\Service\AccountService;
+use App\Models\Bank;
+use App\Service\BankService;
 use Illuminate\Http\Request;
 
-class AccountController extends Controller
+class BankController extends Controller
 {
     public function __construct()
     {
-        $this->baseService = new AccountService;
+        $this->baseService = new BankService;
     }
     public function index()
     {
         $item = $this->baseService->Index();
-        $columns = Account::$columns;
+        $columns = Bank::$columns;
         if (request()->ajax()) {
             return $item;
         }
-        return view('pages.account.index', compact('columns'));
+        return view('pages.bank.index', compact('columns'));
     }
 
     public function store(Request $request)
     {
         if ($request->id == null) {
             $request->validate([
-                'name' => 'required',
+                'holder_name' => 'required',
                 'account_no' => 'required',
+                'bank_name' => 'required',
             ]);
         }
         $data = $request->all();
         $message = $this->baseService->create($data);
-        return redirect()->route('account.index')->with($message);
+        return redirect()->route('bank.index')->with($message);
     }
     function edit($id)
     {
-        $account = Account::findOrFail($id);
+        $bank = Bank::findOrFail($id);
         $item = $this->baseService->Index();
-        $columns = Account::$columns;
+        $columns = Bank::$columns;
         if (request()->ajax()) {
             return $item;
         }
-        return view('pages.account.index', compact('columns', 'account'));
+        return view('pages.bank.index', compact('columns', 'bank'));
     }
     function delete($id)
     {
-        Account::findOrFail($id)->delete();
-        return redirect()->route('account.index')->with('success', 'Account Deleted Successfully');
+        Bank::findOrFail($id)->delete();
+        return redirect()->route('bank.index')->with('success', 'Bank Deleted Successfully');
     }
 }

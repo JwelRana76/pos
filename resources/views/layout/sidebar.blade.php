@@ -33,6 +33,8 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item {{ Request::is('accounting/account*') ? 'active' : '' }}"
                     href="{{ route('account.index') }}"> <i class="fas fa-fw fa-arrow-right mr-2"></i>Account</a>
+                <a class="collapse-item {{ Request::is('accounting/bank*') ? 'active' : '' }}"
+                    href="{{ route('bank.index') }}"> <i class="fas fa-fw fa-arrow-right mr-2"></i>Bank</a>
 
             </div>
         </div>
