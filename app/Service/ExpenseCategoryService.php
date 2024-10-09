@@ -19,6 +19,14 @@ class ExpenseCategoryService extends Service
             ->addColumn('action', fn($item) => view('pages.expense_category.action', compact('item'))->render())
             ->make(true);
     }
+    public function Trash()
+    {
+        $data = $this->model::onlyTrashed();
+
+        return DataTables::of($data)
+            ->addColumn('action', fn($item) => view('pages.expense_category.taction', compact('item'))->render())
+            ->make(true);
+    }
     public function create($data)
     {
         DB::beginTransaction();

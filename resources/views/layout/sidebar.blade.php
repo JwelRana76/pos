@@ -20,7 +20,21 @@
 
     <!-- Divider -->
     <hr class="sidebar-divider">
-
+    <li class="nav-item">
+        <a class="nav-link {{Request::is('customer*')?'':'collapsed'}}" href="#" data-toggle="collapse" data-target="#customer"
+            aria-expanded="true" aria-controls="customer">
+            <i class="fas fa-fw fa-people-group"></i>
+            <span>Customer</span>
+        </a>
+        <div id="customer" class="collapse {{Request::is('customer*')?'show':''}}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item {{Request::is('customer')?'active':''}}" href="{{ route('customer.index') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Customer List</a>
+                <a class="collapse-item {{Request::is('customer/create')?'active':''}}" href="{{ route('customer.create') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Add Customer</a>
+                <a class="collapse-item {{Request::is('customer/trash')?'active':''}}" href="{{ route('customer.trash') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Trash List</a>
+                
+            </div>
+        </div>
+    </li>
     <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item">
         <a class="nav-link {{ Request::is('accounting*') ? '' : 'collapsed' }}" href="#" data-toggle="collapse"

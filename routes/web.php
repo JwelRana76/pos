@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\ExpenseCategoryController;
@@ -147,6 +148,24 @@ Route::middleware('auth')->group(function () {
         Route::get('/edit/{id}', [ExpenseController::class, 'edit'])->name('edit');
         Route::get('/delete/{id}', [ExpenseController::class, 'delete'])->name('delete');
         Route::get('/pdelete/{id}', [ExpenseController::class, 'pdelete'])->name('pdelete');
+    });
+
+    Route::group(['prefix' => 'customer', 'as' => 'customer.'], function () {
+        Route::get('/', [CustomerController::class, 'index'])->name('index');
+        Route::get('/trash', [CustomerController::class, 'trash'])->name('trash');
+        Route::get('/create', [CustomerController::class, 'create'])->name('create');
+        Route::post('/store', [CustomerController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [CustomerController::class, 'edit'])->name('edit');
+        Route::get('/restore/{id}', [CustomerController::class, 'restore'])->name('restore');
+        Route::post('/update/{id}', [CustomerController::class, 'update'])->name('update');
+        Route::get('/delete/{id}', [CustomerController::class, 'delete'])->name('delete');
+        Route::get('/pdelete/{id}', [CustomerController::class, 'pdelete'])->name('pdelete');
+        Route::post('/import', [CustomerController::class, 'import'])->name('import');
+        Route::get('/sale/references/{id}', [CustomerController::class, 'saleDetails']);
+        Route::get('/sale/due/{id}', [CustomerController::class, 'saleDue']);
+        Route::post('/payment', [CustomerController::class, 'payment'])->name('payment');
+        Route::get('/payment/details/{id}', [CustomerController::class, 'paymentDetails']);
+        Route::delete('/payment/delete/{id}', [CustomerController::class, 'paymentDelete'])->name('payment.delete');
     });
 });
 

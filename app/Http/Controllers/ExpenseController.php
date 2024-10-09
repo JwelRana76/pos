@@ -23,6 +23,15 @@ class ExpenseController extends Controller
         }
         return view('pages.expense.index', compact('columns', 'categories'));
     }
+    public function trash()
+    {
+        $item = $this->baseService->Trash();
+        $columns = Expense::$columns;
+        if (request()->ajax()) {
+            return $item;
+        }
+        return view('pages.expense.trash', compact('columns'));
+    }
 
     public function store(Request $request)
     {
@@ -50,5 +59,16 @@ class ExpenseController extends Controller
     {
         Expense::findOrFail($id)->delete();
         return redirect()->route('expense.index')->with('success', 'Expense Deleted Successfully');
+    }
+
+    function restore($id)
+    {
+        Expense::withTrashed()->findOrFail($id)->restore();
+        return redirect()->route('expense.index')->with('success', 'Expense Restore Successfully');
+    }
+    function pdelete($id)
+    {
+        Expense::withTrashed()->findOrFail($id)->forceDelete();
+        return redirect()->route('expense.trash')->with('success', 'Expense Permanently Deleted Successfully');
     }
 }

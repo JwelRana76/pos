@@ -29,6 +29,23 @@ class ExpenseService
             ->addColumn('action', fn($item) => view('pages.expense.action', compact('item'))->render())
             ->make(true);
     }
+    public function Trash()
+    {
+        $data = $this->model::onlyTrashed();
+
+        return DataTables::of($data)
+            ->addColumn('date', function ($item) {
+                return $item->created_at->format('d-M-Y');
+            })
+            ->addColumn('category', function ($item) {
+                return $item->category->name ?? 'N/A';
+            })
+            ->addColumn('entry_by', function ($item) {
+                return $item->user->name ?? 'N/A';
+            })
+            ->addColumn('action', fn($item) => view('pages.expense.taction', compact('item'))->render())
+            ->make(true);
+    }
     public function create($data)
     {
         DB::beginTransaction();
