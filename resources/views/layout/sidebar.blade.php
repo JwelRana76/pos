@@ -1,0 +1,64 @@
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+        <div class="sidebar-brand-icon rotate-n-15">
+            <i class="fas fa-laugh-wink"></i>
+        </div>
+        <div class="sidebar-brand-text mx-3">{{ setting()->name_short }}</div>
+    </a>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider my-0">
+
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item active">
+        <a class="nav-link" href="index.html">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Dashboard</span></a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link {{ Request::is('setting*') ? '' : 'collapsed' }}" href="#" data-toggle="collapse"
+            data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+            <i class="fas fa-fw fa-cog"></i>
+            <span>Setting</span>
+        </a>
+        <div id="collapseTwo" class="collapse {{ Request::is('setting*') ? 'show' : '' }}" aria-labelledby="headingTwo"
+            data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item {{ Request::is('setting/role*') ? 'active' : '' }}"
+                    href="{{ route('role.index') }}"> <i class="fas fa-fw fa-arrow-right mr-2"></i>Role</a>
+
+                <a class="collapse-item {{ Request::is('setting/brand*') ? 'active' : '' }}"
+                    href="{{ route('brand.index') }}"> <i class="fas fa-fw fa-arrow-right mr-2"></i>Brand</a>
+                <a class="collapse-item {{ Request::is('setting/category*') ? 'active' : '' }}"
+                    href="{{ route('category.index') }}"> <i class="fas fa-fw fa-arrow-right mr-2"></i>Category</a>
+                <a class="collapse-item {{ Request::is('setting/unit*') ? 'active' : '' }}"
+                    href="{{ route('unit.index') }}"> <i class="fas fa-fw fa-arrow-right mr-2"></i>Unit</a>
+                <a class="collapse-item {{ Request::is('setting/size*') ? 'active' : '' }}"
+                    href="{{ route('size.index') }}"> <i class="fas fa-fw fa-arrow-right mr-2"></i>Size</a>
+
+                <a class="collapse-item {{ Request::is('setting/division*') ? 'active' : '' }}"
+                    href="{{ route('division.index') }}"> <i class="fas fa-fw fa-arrow-right mr-2"></i>Division</a>
+                <a class="collapse-item {{ Request::is('setting/district*') ? 'active' : '' }}"
+                    href="{{ route('district.index') }}"> <i class="fas fa-fw fa-arrow-right mr-2"></i>District</a>
+                <a class="collapse-item" href="{{ route('site_setting.index') }}"><i
+                        class="fas fa-fw fa-arrow-right mr-2"></i>Setting</a>
+
+            </div>
+        </div>
+    </li>
+    <!-- Divider -->
+    <hr class="sidebar-divider d-none d-md-block">
+
+    <!-- Sidebar Toggler (Sidebar) -->
+    <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+    </div>
+
+</ul>
