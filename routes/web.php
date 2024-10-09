@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DistrictController;
@@ -90,6 +91,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/edit/{id}', [UnitController::class, 'edit'])->name('edit');
         Route::get('/delete/{id}', [UnitController::class, 'delete'])->name('delete');
         Route::post('/unitstore', [UnitController::class, 'unitstore'])->name('unitstore');
+    });
+    // accounting menu route section
+    Route::group(['prefix' => 'accounting/account', 'as' => 'account.'], function () {
+        Route::get('/', [AccountController::class, 'index'])->name('index');
+        Route::post('/store', [AccountController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [AccountController::class, 'edit'])->name('edit');
+        Route::get('/delete/{id}', [AccountController::class, 'delete'])->name('delete');
     });
 });
 

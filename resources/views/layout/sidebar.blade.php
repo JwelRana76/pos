@@ -23,12 +23,27 @@
 
     <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item">
+        <a class="nav-link {{ Request::is('accounting*') ? '' : 'collapsed' }}" href="#" data-toggle="collapse"
+            data-target="#accounting" aria-expanded="true" aria-controls="accounting">
+            <i class="fas fa-fw fa-cog"></i>
+            <span>Accounting</span>
+        </a>
+        <div id="accounting" class="collapse {{ Request::is('accounting*') ? 'show' : '' }}" aria-labelledby="headingTwo"
+            data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item {{ Request::is('accounting/account*') ? 'active' : '' }}"
+                    href="{{ route('account.index') }}"> <i class="fas fa-fw fa-arrow-right mr-2"></i>Account</a>
+
+            </div>
+        </div>
+    </li>
+    <li class="nav-item">
         <a class="nav-link {{ Request::is('setting*') ? '' : 'collapsed' }}" href="#" data-toggle="collapse"
-            data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+            data-target="#setting" aria-expanded="true" aria-controls="setting">
             <i class="fas fa-fw fa-cog"></i>
             <span>Setting</span>
         </a>
-        <div id="collapseTwo" class="collapse {{ Request::is('setting*') ? 'show' : '' }}" aria-labelledby="headingTwo"
+        <div id="setting" class="collapse {{ Request::is('setting*') ? 'show' : '' }}" aria-labelledby="headingTwo"
             data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item {{ Request::is('setting/role*') ? 'active' : '' }}"

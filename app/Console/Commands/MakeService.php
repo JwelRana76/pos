@@ -41,8 +41,8 @@ class MakeService extends Command
         }
 
         // Ensure the Services directory exists
-        if (!File::isDirectory(app_path('Services'))) {
-            File::makeDirectory(app_path('Services'), 0755, true);
+        if (!File::isDirectory(app_path('Service'))) {
+            File::makeDirectory(app_path('Service'), 0755, true);
         }
 
         // Create the service class content
