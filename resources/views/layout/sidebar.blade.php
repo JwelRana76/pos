@@ -40,6 +40,23 @@
         </div>
     </li>
     <li class="nav-item">
+        <a class="nav-link {{Request::is('income*')?'':'collapsed'}}" href="#" data-toggle="collapse" data-target="#income"
+            aria-expanded="true" aria-controls="income">
+            <i class="fas fa-fw fa-money-bill-wheat"></i>
+            <span>Income</span>
+        </a>
+        <div id="income" class="collapse {{Request::is('income*')?'show':''}}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                
+                <a class="collapse-item {{Request::is('income*')?'active':''}}" href="{{ route('income.index') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Income List</a>
+                
+                
+                <a class="collapse-item {{Request::is('income-category*')?'active':''}}" href="{{ route('income-category.index') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Income Category</a>
+                
+            </div>
+        </div>
+    </li>
+    <li class="nav-item">
         <a class="nav-link {{ Request::is('setting*') ? '' : 'collapsed' }}" href="#" data-toggle="collapse"
             data-target="#setting" aria-expanded="true" aria-controls="setting">
             <i class="fas fa-fw fa-cog"></i>

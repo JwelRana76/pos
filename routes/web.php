@@ -6,6 +6,8 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\DivisionController;
+use App\Http\Controllers\IncomeCategoryController;
+use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SiteSettingController;
@@ -105,6 +107,19 @@ Route::middleware('auth')->group(function () {
         Route::post('/store', [BankController::class, 'store'])->name('store');
         Route::get('/edit/{id}', [BankController::class, 'edit'])->name('edit');
         Route::get('/delete/{id}', [BankController::class, 'delete'])->name('delete');
+    });
+    Route::group(['prefix' => 'income-category', 'as' => 'income-category.'], function () {
+        Route::get('/', [IncomeCategoryController::class, 'index'])->name('index');
+        Route::get('/edit/{id}', [IncomeCategoryController::class, 'edit'])->name('edit');
+        Route::post('/store', [IncomeCategoryController::class, 'store'])->name('store');
+        Route::post('/categprystore', [IncomeCategoryController::class, 'categprystore'])->name('categprystore');
+        Route::get('/delete/{id}', [IncomeCategoryController::class, 'delete'])->name('delete');
+    });
+    Route::group(['prefix' => 'income', 'as' => 'income.'], function () {
+        Route::get('/', [IncomeController::class, 'index'])->name('index');
+        Route::post('/store', [IncomeController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [IncomeController::class, 'edit'])->name('edit');
+        Route::get('/delete/{id}', [IncomeController::class, 'delete'])->name('delete');
     });
 });
 

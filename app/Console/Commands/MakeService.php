@@ -68,7 +68,7 @@ class MakeService extends Command
         return <<<EOD
 <?php
 
-namespace App\Services;
+namespace App\Service;
 
 class {$name}
 {
