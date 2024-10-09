@@ -2,15 +2,15 @@
 
 namespace App\Service;
 
-use App\Models\Income;
+use App\Models\Expense;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Yajra\DataTables\DataTables;
+use Yajra\DataTables\Facades\DataTables;
 
-class IncomeService
+class ExpenseService
 {
-    protected $model = Income::class;
+    protected $model = Expense::class;
 
     public function Index()
     {
@@ -26,24 +26,7 @@ class IncomeService
             ->addColumn('entry_by', function ($item) {
                 return $item->user->name ?? 'N/A';
             })
-            ->addColumn('action', fn($item) => view('pages.income.action', compact('item'))->render())
-            ->make(true);
-    }
-    public function Trash()
-    {
-        $data = $this->model::onlyTrashed();
-
-        return DataTables::of($data)
-            ->addColumn('date', function ($item) {
-                return $item->created_at->format('d-M-Y');
-            })
-            ->addColumn('category', function ($item) {
-                return $item->category->name ?? 'N/A';
-            })
-            ->addColumn('entry_by', function ($item) {
-                return $item->user->name ?? 'N/A';
-            })
-            ->addColumn('action', fn($item) => view('pages.income.taction', compact('item'))->render())
+            ->addColumn('action', fn($item) => view('pages.expense.action', compact('item'))->render())
             ->make(true);
     }
     public function create($data)
@@ -51,6 +34,7 @@ class IncomeService
         DB::beginTransaction();
         try {
             if ($data['id'] == null) {
+
                 $this->model::create([
                     'category_id' => $data['category_id'],
                     'amount' => $data['amount'],
@@ -58,8 +42,9 @@ class IncomeService
                     'note' => $data['note'],
                     'user_id' => Auth::user()->id,
                 ]);
-                $message = ['success' => 'Income Inserted Successfully'];
+                $message = ['success' => 'Expense Inserted Successfully'];
             } else {
+
                 $this->model::findOrFail($data['id'])->update([
                     'category_id' => $data['category_id'],
                     'amount' => $data['amount'],
@@ -67,7 +52,7 @@ class IncomeService
                     'note' => $data['note'],
                     'user_id' => Auth::user()->id,
                 ]);
-                $message = ['success' => 'Income Category Updated Successfully'];
+                $message = ['success' => 'Expense Category Updated Successfully'];
             }
             DB::commit();
             return $message;

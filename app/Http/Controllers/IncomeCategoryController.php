@@ -21,6 +21,15 @@ class IncomeCategoryController extends Controller
         }
         return view('pages.income_category.index', compact('columns'));
     }
+    public function trash()
+    {
+        $item = $this->baseService->Trash();
+        $columns = IncomeCategory::$columns;
+        if (request()->ajax()) {
+            return $item;
+        }
+        return view('pages.income_category.trash', compact('columns'));
+    }
 
     public function store(Request $request)
     {
@@ -63,5 +72,15 @@ class IncomeCategoryController extends Controller
     {
         IncomeCategory::findOrFail($id)->delete();
         return redirect()->route('income-category.index')->with('success', 'Income Category Deleted Successfully');
+    }
+    function restore($id)
+    {
+        IncomeCategory::withTrashed()->findOrFail($id)->restore();
+        return redirect()->route('income-category.index')->with('success', 'Income Category Restored Successfully');
+    }
+    function pdelete($id)
+    {
+        IncomeCategory::withTrashed()->find($id)->forceDelete();
+        return redirect()->route('income-category.trash')->with('success', 'Income Category Permanently Deleted Successfully');
     }
 }

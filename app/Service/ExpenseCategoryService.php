@@ -2,29 +2,21 @@
 
 namespace App\Service;
 
-use App\Models\IncomeCategory;
+use App\Models\ExpenseCategory;
 use Exception;
 use Illuminate\Support\Facades\DB;
-use Yajra\DataTables\DataTables;
+use Yajra\DataTables\Facades\DataTables;
 
-class IncomeCategoryService
+class ExpenseCategoryService extends Service
 {
-    protected $model = IncomeCategory::class;
+    protected $model = ExpenseCategory::class;
 
     public function Index()
     {
         $data = $this->model::all();
 
         return DataTables::of($data)
-            ->addColumn('action', fn($item) => view('pages.income_category.action', compact('item'))->render())
-            ->make(true);
-    }
-    public function Trash()
-    {
-        $data = $this->model::onlyTrashed();
-
-        return DataTables::of($data)
-            ->addColumn('action', fn($item) => view('pages.income_category.taction', compact('item'))->render())
+            ->addColumn('action', fn($item) => view('pages.expense_category.action', compact('item'))->render())
             ->make(true);
     }
     public function create($data)
@@ -36,13 +28,13 @@ class IncomeCategoryService
                     'name' => $data['name'],
                     'code' => $data['code'],
                 ]);
-                $message = ['success' => 'Income Category Inserted Successfully'];
+                $message = ['success' => 'Expense Category Inserted Successfully'];
             } else {
                 $this->model::findOrFail($data['id'])->update([
                     'name' => $data['name'],
                     'code' => $data['code'],
                 ]);
-                $message = ['success' => 'Income Category Updated Successfully'];
+                $message = ['success' => 'Expense Category Updated Successfully'];
             }
             DB::commit();
             return $message;

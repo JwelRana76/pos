@@ -6,6 +6,8 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\DivisionController;
+use App\Http\Controllers\ExpenseCategoryController;
+use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\IncomeCategoryController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\ProfileController;
@@ -111,15 +113,40 @@ Route::middleware('auth')->group(function () {
     Route::group(['prefix' => 'income-category', 'as' => 'income-category.'], function () {
         Route::get('/', [IncomeCategoryController::class, 'index'])->name('index');
         Route::get('/edit/{id}', [IncomeCategoryController::class, 'edit'])->name('edit');
+        Route::get('/trash', [IncomeCategoryController::class, 'trash'])->name('trash');
+        Route::get('/restore/{id}', [IncomeCategoryController::class, 'restore'])->name('restore');
         Route::post('/store', [IncomeCategoryController::class, 'store'])->name('store');
         Route::post('/categprystore', [IncomeCategoryController::class, 'categprystore'])->name('categprystore');
         Route::get('/delete/{id}', [IncomeCategoryController::class, 'delete'])->name('delete');
+        Route::get('/pdelete/{id}', [IncomeCategoryController::class, 'pdelete'])->name('pdelete');
     });
     Route::group(['prefix' => 'income', 'as' => 'income.'], function () {
         Route::get('/', [IncomeController::class, 'index'])->name('index');
+        Route::get('/trash', [IncomeController::class, 'trash'])->name('trash');
+        Route::get('/restore/{id}', [IncomeController::class, 'restore'])->name('restore');
         Route::post('/store', [IncomeController::class, 'store'])->name('store');
         Route::get('/edit/{id}', [IncomeController::class, 'edit'])->name('edit');
         Route::get('/delete/{id}', [IncomeController::class, 'delete'])->name('delete');
+        Route::get('/pdelete/{id}', [IncomeController::class, 'pdelete'])->name('pdelete');
+    });
+    Route::group(['prefix' => 'expense-category', 'as' => 'expense-category.'], function () {
+        Route::get('/', [ExpenseCategoryController::class, 'index'])->name('index');
+        Route::get('/edit/{id}', [ExpenseCategoryController::class, 'edit'])->name('edit');
+        Route::get('/trash', [ExpenseCategoryController::class, 'trash'])->name('trash');
+        Route::get('/restore/{id}', [ExpenseCategoryController::class, 'restore'])->name('restore');
+        Route::post('/store', [ExpenseCategoryController::class, 'store'])->name('store');
+        Route::post('/categprystore', [ExpenseCategoryController::class, 'categprystore'])->name('categprystore');
+        Route::get('/delete/{id}', [ExpenseCategoryController::class, 'delete'])->name('delete');
+        Route::get('/pdelete/{id}', [ExpenseCategoryController::class, 'pdelete'])->name('pdelete');
+    });
+    Route::group(['prefix' => 'expense', 'as' => 'expense.'], function () {
+        Route::get('/', [ExpenseController::class, 'index'])->name('index');
+        Route::get('/trash', [ExpenseController::class, 'trash'])->name('trash');
+        Route::get('/restore/{id}', [ExpenseController::class, 'restore'])->name('restore');
+        Route::post('/store', [ExpenseController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [ExpenseController::class, 'edit'])->name('edit');
+        Route::get('/delete/{id}', [ExpenseController::class, 'delete'])->name('delete');
+        Route::get('/pdelete/{id}', [ExpenseController::class, 'pdelete'])->name('pdelete');
     });
 });
 

@@ -48,10 +48,27 @@
         <div id="income" class="collapse {{Request::is('income*')?'show':''}}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 
-                <a class="collapse-item {{Request::is('income*')?'active':''}}" href="{{ route('income.index') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Income List</a>
+                <a class="collapse-item {{Request::is('income')?'active':''}}" href="{{ route('income.index') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Income List</a>
+                <a class="collapse-item {{Request::is('income-category')?'active':''}}" href="{{ route('income-category.index') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Income Category</a>
+                <a class="collapse-item {{Request::is('income/trash')?'active':''}}" href="{{ route('income.trash') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Income Trash</a>
+                <a class="collapse-item {{Request::is('income-category/trash')?'active':''}}" href="{{ route('income-category.trash') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Category Trash</a>
                 
+            </div>
+        </div>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {{Request::is('expense*')?'':'collapsed'}}" href="#" data-toggle="collapse" data-target="#expense"
+            aria-expanded="true" aria-controls="expense">
+            <i class="fas fa-fw fa-credit-card"></i>
+            <span>Expense</span>
+        </a>
+        <div id="expense" class="collapse {{Request::is('expense*')?'show':''}}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
                 
-                <a class="collapse-item {{Request::is('income-category*')?'active':''}}" href="{{ route('income-category.index') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Income Category</a>
+                <a class="collapse-item {{Request::is('expense*')?'active':''}}" href="{{ route('expense.index') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Expense List</a>
+                <a class="collapse-item {{Request::is('expense-category')?'active':''}}" href="{{ route('expense-category.index') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Expense Category</a>
+                <a class="collapse-item {{Request::is('expense/trash')?'active':''}}" href="{{ route('expense.trash') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Expense Trash</a>
+                <a class="collapse-item {{Request::is('expense-category/trash')?'active':''}}" href="{{ route('expense-category.trash') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Category Trash</a>
                 
             </div>
         </div>
