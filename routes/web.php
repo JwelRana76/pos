@@ -7,10 +7,12 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\DivisionController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ExpenseCategoryController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\IncomeCategoryController;
 use App\Http\Controllers\IncomeController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SiteSettingController;
@@ -166,6 +168,30 @@ Route::middleware('auth')->group(function () {
         Route::post('/payment', [CustomerController::class, 'payment'])->name('payment');
         Route::get('/payment/details/{id}', [CustomerController::class, 'paymentDetails']);
         Route::delete('/payment/delete/{id}', [CustomerController::class, 'paymentDelete'])->name('payment.delete');
+    });
+    Route::group(['prefix' => 'employee', 'as' => 'employee.'], function () {
+        Route::get('/', [EmployeeController::class, 'index'])->name('index');
+        Route::get('/trash', [EmployeeController::class, 'trash'])->name('trash');
+        Route::get('/create', [EmployeeController::class, 'create'])->name('create');
+        Route::post('/store', [EmployeeController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [EmployeeController::class, 'edit'])->name('edit');
+        Route::get('/restore/{id}', [EmployeeController::class, 'restore'])->name('restore');
+        Route::post('/update/{id}', [EmployeeController::class, 'update'])->name('update');
+        Route::get('/delete/{id}', [EmployeeController::class, 'delete'])->name('delete');
+        Route::get('/pdelete/{id}', [EmployeeController::class, 'pdelete'])->name('pdelete');
+        Route::post('/import', [EmployeeController::class, 'import'])->name('import');
+    });
+    Route::group(['prefix' => 'product', 'as' => 'product.'], function () {
+        Route::get('/', [ProductController::class, 'index'])->name('index');
+        Route::get('/trash', [ProductController::class, 'trash'])->name('trash');
+        Route::get('/create', [ProductController::class, 'create'])->name('create');
+        Route::post('/store', [ProductController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [ProductController::class, 'edit'])->name('edit');
+        Route::get('/restore/{id}', [ProductController::class, 'restore'])->name('restore');
+        Route::post('/update/{id}', [ProductController::class, 'update'])->name('update');
+        Route::get('/delete/{id}', [ProductController::class, 'delete'])->name('delete');
+        Route::get('/pdelete/{id}', [ProductController::class, 'pdelete'])->name('pdelete');
+        Route::post('/import', [ProductController::class, 'import'])->name('import');
     });
 });
 

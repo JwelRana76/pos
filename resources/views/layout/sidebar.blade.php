@@ -21,6 +21,20 @@
     <!-- Divider -->
     <hr class="sidebar-divider">
     <li class="nav-item">
+        <a class="nav-link {{Request::is('product*')?'':'collapsed'}}" href="#" data-toggle="collapse" data-target="#product"
+            aria-expanded="true" aria-controls="product">
+            <i class="fa-brands fa-wpforms"></i>
+            <span>Product</span>
+        </a>
+        <div id="product" class="collapse {{Request::is('product*')?'show':''}}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item {{Request::is('product')?'active':''}}" href="{{ route('product.index') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Product List</a>
+                <a class="collapse-item {{Request::is('product/create')?'active':''}}" href="{{ route('product.create') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Add Product</a>
+                <a class="collapse-item {{Request::is('product/trash')?'active':''}}" href="{{ route('product.trash') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Trash List</a>
+            </div>
+        </div>
+    </li>
+    <li class="nav-item">
         <a class="nav-link {{Request::is('customer*')?'':'collapsed'}}" href="#" data-toggle="collapse" data-target="#customer"
             aria-expanded="true" aria-controls="customer">
             <i class="fas fa-fw fa-people-group"></i>
@@ -31,6 +45,21 @@
                 <a class="collapse-item {{Request::is('customer')?'active':''}}" href="{{ route('customer.index') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Customer List</a>
                 <a class="collapse-item {{Request::is('customer/create')?'active':''}}" href="{{ route('customer.create') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Add Customer</a>
                 <a class="collapse-item {{Request::is('customer/trash')?'active':''}}" href="{{ route('customer.trash') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Trash List</a>
+                
+            </div>
+        </div>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {{Request::is('employee*')?'':'collapsed'}}" href="#" data-toggle="collapse" data-target="#employee"
+            aria-expanded="true" aria-controls="employee">
+            <i class="fas fa-fw fa-people-line"></i>
+            <span>Employee</span>
+        </a>
+        <div id="employee" class="collapse {{Request::is('employee*')?'show':''}}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item {{Request::is('employee')?'active':''}}" href="{{ route('employee.index') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Employee List</a>
+                <a class="collapse-item {{Request::is('employee/create')?'active':''}}" href="{{ route('employee.create') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Add Employee</a>
+                <a class="collapse-item {{Request::is('employee/trash')?'active':''}}" href="{{ route('employee.trash') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Trash List</a>
                 
             </div>
         </div>

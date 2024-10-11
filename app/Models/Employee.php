@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Customer extends Model
+class Employee extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -17,7 +17,6 @@ class Customer extends Model
         ['name' => 'name', 'data' => 'name'],
         ['name' => 'contact', 'data' => 'contact'],
         ['name' => 'district', 'data' => 'district'],
-        ['name' => 'due', 'data' => 'due'],
         ['name' => 'action', 'data' => 'action'],
     ];
 
@@ -25,13 +24,12 @@ class Customer extends Model
     {
         return $this->belongsTo(District::class);
     }
-    public function getDueAttribute()
+    public function user()
     {
-        // $sale = Sale::where('customer_id', $this->id)->sum('grand_total');
-        // $payment = SalePayment::where('customer_id', $this->id)->sum('amount');
-        // $return = SaleReturn::where('customer_id', $this->id)->sum('grand_total');
-        // $opening_due = Customer::find($this->id)->opening_due ?? 0;
-        // return $sale - $payment + $opening_due - $return;
-        return 0;
+        return $this->belongsTo(User::class);
     }
+    // public function salary_particular()
+    // {
+    //     return $this->hasMany(SalaryAssign::class, 'employee_id', 'id');
+    // }
 }
