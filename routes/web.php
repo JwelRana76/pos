@@ -14,9 +14,11 @@ use App\Http\Controllers\IncomeCategoryController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SiteSettingController;
 use App\Http\Controllers\SizeController;
+use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
@@ -181,6 +183,23 @@ Route::middleware('auth')->group(function () {
         Route::get('/pdelete/{id}', [EmployeeController::class, 'pdelete'])->name('pdelete');
         Route::post('/import', [EmployeeController::class, 'import'])->name('import');
     });
+    Route::group(['prefix' => 'supplier', 'as' => 'supplier.'], function () {
+        Route::get('/', [SupplierController::class, 'index'])->name('index');
+        Route::get('/trash', [SupplierController::class, 'trash'])->name('trash');
+        Route::get('/create', [SupplierController::class, 'create'])->name('create');
+        Route::post('/store', [SupplierController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [SupplierController::class, 'edit'])->name('edit');
+        Route::get('/restore/{id}', [SupplierController::class, 'restore'])->name('restore');
+        Route::post('/update/{id}', [SupplierController::class, 'update'])->name('update');
+        Route::get('/delete/{id}', [SupplierController::class, 'delete'])->name('delete');
+        Route::get('/pdelete/{id}', [SupplierController::class, 'pdelete'])->name('pdelete');
+        Route::post('/import', [SupplierController::class, 'import'])->name('import');
+        Route::get('/purchase/references/{id}', [SupplierController::class, 'purchaseDetails'])->name('purchasedetails');
+        Route::get('/purchase/due/{id}', [SupplierController::class, 'purchaseDue']);
+        Route::post('/payment', [SupplierController::class, 'payment'])->name('payment');
+        Route::get('/payment/details/{id}', [SupplierController::class, 'paymentDetails']);
+        Route::delete('/payment/delete/{id}', [SupplierController::class, 'paymentDelete'])->name('payment.delete');
+    });
     Route::group(['prefix' => 'product', 'as' => 'product.'], function () {
         Route::get('/', [ProductController::class, 'index'])->name('index');
         Route::get('/trash', [ProductController::class, 'trash'])->name('trash');
@@ -192,6 +211,20 @@ Route::middleware('auth')->group(function () {
         Route::get('/delete/{id}', [ProductController::class, 'delete'])->name('delete');
         Route::get('/pdelete/{id}', [ProductController::class, 'pdelete'])->name('pdelete');
         Route::post('/import', [ProductController::class, 'import'])->name('import');
+    });
+    Route::group(['prefix' => 'purchase', 'as' => 'purchase.'], function () {
+        Route::get('/', [PurchaseController::class, 'index'])->name('index');
+        Route::get('/trash', [PurchaseController::class, 'trash'])->name('trash');
+        Route::get('/create', [PurchaseController::class, 'create'])->name('create');
+        Route::post('/store', [PurchaseController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [PurchaseController::class, 'edit'])->name('edit');
+        Route::get('/restore/{id}', [PurchaseController::class, 'restore'])->name('restore');
+        Route::post('/update/{id}', [PurchaseController::class, 'update'])->name('update');
+        Route::get('/delete/{id}', [PurchaseController::class, 'delete'])->name('delete');
+        Route::get('/pdelete/{id}', [PurchaseController::class, 'pdelete'])->name('pdelete');
+        Route::post('/getProduct/', [PurchaseController::class, 'getProduct'])->name('getProduct');
+        Route::get('/show/{id}', [PurchaseController::class, 'show'])->name('show');
+        Route::get('/dueamount/{id}', [PurchaseController::class, 'dueamount']);
     });
 });
 

@@ -35,6 +35,20 @@
         </div>
     </li>
     <li class="nav-item">
+        <a class="nav-link {{Request::is('purchase*')?'':'collapsed'}}" href="#" data-toggle="collapse" data-target="#purchase"
+            aria-expanded="true" aria-controls="purchase">
+            <i class="fas fa-fw fa-shopping-cart"></i>
+            <span>Purchase</span>
+        </a>
+        <div id="purchase" class="collapse {{Request::is('purchase*')?'show':''}}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item {{Request::is('purchase')?'active':''}}" href="{{ route('purchase.index') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Purchase List</a>
+                <a class="collapse-item {{Request::is('purchase/create')?'active':''}}" href="{{ route('purchase.create') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Add Purchase</a>
+                <a class="collapse-item {{Request::is('purchase/trash')?'active':''}}" href="{{ route('purchase.trash') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Trash List</a>
+            </div>
+        </div>
+    </li>
+    <li class="nav-item">
         <a class="nav-link {{Request::is('customer*')?'':'collapsed'}}" href="#" data-toggle="collapse" data-target="#customer"
             aria-expanded="true" aria-controls="customer">
             <i class="fas fa-fw fa-people-group"></i>
@@ -46,6 +60,20 @@
                 <a class="collapse-item {{Request::is('customer/create')?'active':''}}" href="{{ route('customer.create') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Add Customer</a>
                 <a class="collapse-item {{Request::is('customer/trash')?'active':''}}" href="{{ route('customer.trash') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Trash List</a>
                 
+            </div>
+        </div>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {{Request::is('supplier*')?'':'collapsed'}}" href="#" data-toggle="collapse" data-target="#supplier"
+            aria-expanded="true" aria-controls="supplier">
+            <i class="fas fa-fw fa-users"></i>
+            <span>Supplier</span>
+        </a>
+        <div id="supplier" class="collapse {{Request::is('supplier*')?'show':''}}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item {{Request::is('supplier')?'active':''}}" href="{{ route('supplier.index') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Supplier List</a>
+                <a class="collapse-item {{Request::is('supplier/create')?'active':''}}" href="{{ route('supplier.create') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Add Supplier</a>
+                <a class="collapse-item {{Request::is('supplier/trash')?'active':''}}" href="{{ route('supplier.trash') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Trash List</a>
             </div>
         </div>
     </li>

@@ -42,11 +42,12 @@ class Product extends Model
     }
     public function getStockAttribute()
     {
-        // $purchase = ProductPurchase::where('product_id', $this->id)->sum('qty');
+        $purchase = Purchase::join('product_purchases', 'purchases.id', 'product_purchases.purchase_id')
+        ->where('product_purchases.product_id', $this->id)->sum('product_purchases.qty');
         // $sale = SaleProduct::where('product_id', $this->id)->sum('qty');
         // $purchase_return = PurchaseReturnProduct::where('product_id', $this->id)->sum('qty');
         // $sale_return = SaleReturnProduct::where('product_id', $this->id)->sum('qty');
         // return $purchase - $sale - $purchase_return + $sale_return;
-        return 0;
+        return $purchase;
     }
 }
