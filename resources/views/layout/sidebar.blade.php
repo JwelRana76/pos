@@ -49,6 +49,21 @@
         </div>
     </li>
     <li class="nav-item">
+        <a class="nav-link {{Request::is('sale*')?'':'collapsed'}}" href="#" data-toggle="collapse" data-target="#sale"
+            aria-expanded="true" aria-controls="sale">
+            <i class="fas fa-fw fa-scale-unbalanced"></i>
+            <span>Sale</span>
+        </a>
+        <div id="sale" class="collapse {{Request::is('sale*')?'show':''}}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item {{Request::is('sale')?'active':''}}" href="{{ route('sale.index') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Sale List</a>
+                <a class="collapse-item {{Request::is('sale/create')?'active':''}}" href="{{ route('sale.create') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Add Sale</a>
+                <a class="collapse-item {{Request::is('sale/trash')?'active':''}}" href="{{ route('sale.trash') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Trash List</a>
+                
+            </div>
+        </div>
+    </li>
+    <li class="nav-item">
         <a class="nav-link {{Request::is('customer*')?'':'collapsed'}}" href="#" data-toggle="collapse" data-target="#customer"
             aria-expanded="true" aria-controls="customer">
             <i class="fas fa-fw fa-people-group"></i>

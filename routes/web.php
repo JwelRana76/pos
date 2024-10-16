@@ -16,6 +16,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SaleController;
 use App\Http\Controllers\SiteSettingController;
 use App\Http\Controllers\SizeController;
 use App\Http\Controllers\SupplierController;
@@ -225,6 +226,22 @@ Route::middleware('auth')->group(function () {
         Route::post('/getProduct/', [PurchaseController::class, 'getProduct'])->name('getProduct');
         Route::get('/show/{id}', [PurchaseController::class, 'show'])->name('show');
         Route::get('/dueamount/{id}', [PurchaseController::class, 'dueamount']);
+    });
+
+    Route::group(['prefix' => 'sale', 'as' => 'sale.'], function () {
+        Route::get('/', [SaleController::class, 'index'])->name('index');
+        Route::get('/trash', [SaleController::class, 'trash'])->name('trash');
+        Route::get('/create', [SaleController::class, 'create'])->name('create');
+        Route::post('/store', [SaleController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [SaleController::class, 'edit'])->name('edit');
+        Route::get('/restore/{id}', [SaleController::class, 'restore'])->name('restore');
+        Route::post('/update/{id}', [SaleController::class, 'update'])->name('update');
+        Route::get('/delete/{id}', [SaleController::class, 'delete'])->name('delete');
+        Route::get('/pdelete/{id}', [SaleController::class, 'pdelete'])->name('pdelete');
+        Route::post('/getProduct/', [SaleController::class, 'getProduct'])->name('getProduct');
+        Route::get('/invoice/{id}', [SaleController::class, 'invoice'])->name('invoice');
+        Route::get('/show/{id}', [SaleController::class, 'show'])->name('show');
+        Route::get('/dueamount/{id}', [SaleController::class, 'dueamount']);
     });
 });
 
