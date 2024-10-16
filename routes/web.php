@@ -15,8 +15,10 @@ use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\PurchaseReturnController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SaleController;
+use App\Http\Controllers\SaleReturnController;
 use App\Http\Controllers\SiteSettingController;
 use App\Http\Controllers\SizeController;
 use App\Http\Controllers\SupplierController;
@@ -227,7 +229,16 @@ Route::middleware('auth')->group(function () {
         Route::get('/show/{id}', [PurchaseController::class, 'show'])->name('show');
         Route::get('/dueamount/{id}', [PurchaseController::class, 'dueamount']);
     });
-
+    Route::group(['prefix' => 'return-purchase', 'as' => 'purchase.return.'], function () {
+        Route::get('/', [PurchaseReturnController::class, 'index'])->name('index');
+        Route::get('/create', [PurchaseReturnController::class, 'create'])->name('create');
+        Route::post('/store', [PurchaseReturnController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [PurchaseReturnController::class, 'edit'])->name('edit');
+        Route::post('/update/{id}', [PurchaseReturnController::class, 'update'])->name('update');
+        Route::get('/delete/{id}', [PurchaseReturnController::class, 'delete'])->name('delete');
+        Route::post('/getProduct/', [PurchaseReturnController::class, 'getProduct'])->name('getProduct');
+        Route::get('/show/{id}', [PurchaseReturnController::class, 'show'])->name('show');
+    });
     Route::group(['prefix' => 'sale', 'as' => 'sale.'], function () {
         Route::get('/', [SaleController::class, 'index'])->name('index');
         Route::get('/trash', [SaleController::class, 'trash'])->name('trash');
@@ -242,6 +253,16 @@ Route::middleware('auth')->group(function () {
         Route::get('/invoice/{id}', [SaleController::class, 'invoice'])->name('invoice');
         Route::get('/show/{id}', [SaleController::class, 'show'])->name('show');
         Route::get('/dueamount/{id}', [SaleController::class, 'dueamount']);
+    });
+    Route::group(['prefix' => 'return-sale', 'as' => 'sale.return.'], function () {
+        Route::get('/', [SaleReturnController::class, 'index'])->name('index');
+        Route::get('/create', [SaleReturnController::class, 'create'])->name('create');
+        Route::post('/store', [SaleReturnController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [SaleReturnController::class, 'edit'])->name('edit');
+        Route::post('/update/{id}', [SaleReturnController::class, 'update'])->name('update');
+        Route::get('/delete/{id}', [SaleReturnController::class, 'delete'])->name('delete');
+        Route::post('/getProduct/', [SaleReturnController::class, 'getProduct'])->name('getProduct');
+        Route::get('/show/{id}', [SaleReturnController::class, 'show'])->name('show');
     });
 });
 

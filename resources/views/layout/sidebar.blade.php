@@ -64,6 +64,21 @@
         </div>
     </li>
     <li class="nav-item">
+        <a class="nav-link {{Request::is('return*')?'':'collapsed'}}" href="#" data-toggle="collapse" data-target="#return"
+            aria-expanded="true" aria-controls="return">
+            <i class="fas fa-fw fa-right-left"></i>
+            <span> Return</span>
+        </a>
+        <div id="return" class="collapse {{Request::is('return*')?'show':''}}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item {{Request::is('return-sale*')?'active':''}}" href="{{ route('sale.return.index') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i>Sale</a>
+                
+                <a class="collapse-item {{Request::is('return-purchase*')?'active':''}}" href="{{ route('purchase.return.index') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i>Purchase</a>
+                
+            </div>
+        </div>
+    </li>
+    <li class="nav-item">
         <a class="nav-link {{Request::is('customer*')?'':'collapsed'}}" href="#" data-toggle="collapse" data-target="#customer"
             aria-expanded="true" aria-controls="customer">
             <i class="fas fa-fw fa-people-group"></i>
