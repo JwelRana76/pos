@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Account;
+use App\Models\Bank;
 use App\Models\Setting;
 
 if (!function_exists('setting')) {
@@ -11,5 +12,9 @@ if (!function_exists('setting')) {
   function accounts()
   {
     return Account::get();
+  }
+  function banks()
+  {
+    return Bank::get();
   }
 }

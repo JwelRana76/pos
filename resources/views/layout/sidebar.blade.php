@@ -158,6 +158,21 @@
         </div>
     </li>
     <li class="nav-item">
+        <a class="nav-link {{Request::is('invest*')?'':'collapsed'}}" href="#" data-toggle="collapse" data-target="#invest"
+            aria-expanded="true" aria-controls="invest">
+            <i class="fas fa-fw fa-money-bill-wheat"></i>
+            <span>Invest</span>
+        </a>
+        <div id="invest" class="collapse {{Request::is('invest*')?'show':''}}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                
+                <a class="collapse-item {{Request::is('invest')?'active':''}}" href="{{ route('invest.index') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Invest List</a>
+                <a class="collapse-item {{Request::is('invest/trash')?'active':''}}" href="{{ route('invest.trash') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Invest Trash</a>
+                
+            </div>
+        </div>
+    </li>
+    <li class="nav-item">
         <a class="nav-link {{Request::is('expense*')?'':'collapsed'}}" href="#" data-toggle="collapse" data-target="#expense"
             aria-expanded="true" aria-controls="expense">
             <i class="fas fa-fw fa-credit-card"></i>

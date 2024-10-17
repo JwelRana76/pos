@@ -12,6 +12,7 @@ use App\Http\Controllers\ExpenseCategoryController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\IncomeCategoryController;
 use App\Http\Controllers\IncomeController;
+use App\Http\Controllers\InvestController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurchaseController;
@@ -136,6 +137,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/edit/{id}', [IncomeController::class, 'edit'])->name('edit');
         Route::get('/delete/{id}', [IncomeController::class, 'delete'])->name('delete');
         Route::get('/pdelete/{id}', [IncomeController::class, 'pdelete'])->name('pdelete');
+    });
+    Route::group(['prefix' => 'invest', 'as' => 'invest.'], function () {
+        Route::get('/', [InvestController::class, 'index'])->name('index');
+        Route::get('/trash', [InvestController::class, 'trash'])->name('trash');
+        Route::get('/restore/{id}', [InvestController::class, 'restore'])->name('restore');
+        Route::post('/store', [InvestController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [InvestController::class, 'edit'])->name('edit');
+        Route::get('/delete/{id}', [InvestController::class, 'delete'])->name('delete');
+        Route::get('/pdelete/{id}', [InvestController::class, 'pdelete'])->name('pdelete');
     });
     Route::group(['prefix' => 'expense-category', 'as' => 'expense-category.'], function () {
         Route::get('/', [ExpenseCategoryController::class, 'index'])->name('index');

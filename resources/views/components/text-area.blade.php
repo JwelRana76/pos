@@ -3,9 +3,7 @@
         <strong> {{ $attributes['required'] ? '*' : '' }}
         </strong>
     </label>
-    <textarea id="{{ $id }}" class="form-control" cols="10" rows="{{ $row ?? 3 }}" name="{{ $id }}"
-        {{ $attributes }}>
-    </textarea>
+    <textarea id="{{ $id }}" class="form-control" cols="10" rows="{{ $row ?? 3 }}" name="{{ $id }}" {{ $attributes }}>{{ $value }}</textarea>
     @error($id)
         <strong class="text-danger">{{ $message }}</strong>
     @enderror

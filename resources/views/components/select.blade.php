@@ -23,7 +23,7 @@ $selected = $attributes['selectedId'] == (is_array($option) ? $option['id'] : $o
                         $selected = true;
                     } @endphp
                 {{ $selected ? 'selected' : '' }} value="{{ is_array($option) ? $option['id'] : $option->id }}">
-                {{ is_array($option) ? $option['name'] : $option->name }}</option>
+                {{ is_array($option) ? $option[$key??'name'] : ($key == null ? $option->name:$option->$key) }}</option>
         @endforeach
     </select>
 
