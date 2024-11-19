@@ -30,6 +30,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="/css/custom.css">
+    <link rel="stylesheet" href="/css/toastr.css">
 
 </head>
 
@@ -99,8 +100,11 @@
                 </div>
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
+                    <form method="POST" action="{{ route('logout') }}">
+                    @csrf
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
+                    <button class="btn btn-primary" href="login.html">Logout</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -140,6 +144,43 @@
     <script src="/js/buttons.print.min.js"></script>
     <!-- Include Toastr CSS and JS via CDN -->
     <script src="/js/bootstrap-select.min.js"></script>
+    <script src="/js/toastr.js"></script>
+    {{-- toastr notification section --}}
+    <script>
+    toastr.options = {
+        "closeButton": true,
+        "progressBar": true, 
+        "timeOut": "2000", 
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"  
+    };
+</script>
+    @if (Session::has('success'))
+        <script>
+            toastr.success('{{ Session::get('success') }}');
+        </script>
+    @endif
+
+    @if (Session::has('error'))
+        <script>
+            toastr.error('{{ Session::get('error') }}');
+        </script>
+    @endif
+
+    @if (Session::has('warning'))
+        <script>
+            toastr.warning('{{ Session::get('warning') }}');
+        </script>
+    @endif
+
+    @if (Session::has('info'))
+        <script>
+            toastr.info('{{ Session::get('info') }}');
+        </script>
+    @endif
+
 
     @stack('js')
 </body>

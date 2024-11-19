@@ -15,8 +15,7 @@ class Invest extends Model
     public static $columns = [
         ['name' => 'date', 'data' => 'date'],
         ['name' => 'amount', 'data' => 'amount'],
-        ['name' => 'entry_by', 'data' => 'entry_by'],
-        ['name' => 'invest_to', 'data' => 'invest_to'],
+        ['name' => 'return', 'data' => 'return'],
         ['name' => 'note', 'data' => 'note'],
         ['name' => 'action', 'data' => 'action'],
     ];
@@ -24,5 +23,15 @@ class Invest extends Model
     function user()
     {
         return $this->belongsTo(User::class);
+    }
+    function getReturnAttribute()
+    {
+        return InvestReturn::where('invest_id', $this->id)->sum('amount');
+    }
+    function getBalanceAttribute()
+    {
+        $paid = $this->amount;
+        $return = $this->return;
+        return $paid - $return;
     }
 }

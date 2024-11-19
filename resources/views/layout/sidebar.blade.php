@@ -173,6 +173,19 @@
         </div>
     </li>
     <li class="nav-item">
+        <a class="nav-link {{Request::is('loan*')?'':'collapsed'}}" href="#" data-toggle="collapse" data-target="#loan"
+            aria-expanded="true" aria-controls="loan">
+            <i class="fas fa-fw fa-wallet"></i>
+            <span>Loan</span>
+        </a>
+        <div id="loan" class="collapse {{Request::is('loan*')?'show':''}}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item {{Request::is('loan/*')?'active':''}}" href="{{ route('loan.index') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Loan List</a>
+                <a class="collapse-item {{Request::is('loan/create')?'active':''}}" href="{{ route('loan.create') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Loan Create</a>
+            </div>
+        </div>
+    </li>
+    <li class="nav-item">
         <a class="nav-link {{Request::is('expense*')?'':'collapsed'}}" href="#" data-toggle="collapse" data-target="#expense"
             aria-expanded="true" aria-controls="expense">
             <i class="fas fa-fw fa-credit-card"></i>
@@ -186,6 +199,25 @@
                 <a class="collapse-item {{Request::is('expense/trash')?'active':''}}" href="{{ route('expense.trash') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Expense Trash</a>
                 <a class="collapse-item {{Request::is('expense-category/trash')?'active':''}}" href="{{ route('expense-category.trash') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Category Trash</a>
                 
+            </div>
+        </div>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {{Request::is('payrole*')?'':'collapsed'}}" href="#" data-toggle="collapse" data-target="#payrole"
+            aria-expanded="true" aria-controls="payrole">
+            <i class="fas fa-fw fa-wallet"></i>
+            <span>Payrole</span>
+        </a>
+        <div id="payrole" class="collapse {{Request::is('payrole*')?'show':''}}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item {{Request::is('payrole/salary-particular*')?'active':''}}" href="{{ route('salary-particular.index') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Salary Particular</a>
+                <a class="collapse-item {{Request::is('payrole/salary-assign*')?'active':''}}" href="{{ route('salary-assign.index',0) }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Salary Assign</a>
+                <a class="collapse-item {{Request::is('payrole/salary-submit/create')?'active':''}}" href="{{ route('salary-submit.create') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Salary Submit</a>
+                <a class="collapse-item {{Request::is('payrole/salary-submit')?'active':''}}" href="{{ route('salary-submit.index') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Monthly Salary List</a>
+                <a class="collapse-item {{Request::is('payrole/advance-salary/create')?'active':''}}" href="{{ route('advance-salary.create') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Advance Salary</a>
+                <a class="collapse-item {{Request::is('payrole/advance-salary')?'active':''}}" href="{{ route('advance-salary.index') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Advance Salary List</a>
+                <a class="collapse-item {{Request::is('payrole/salary-payment/create')?'active':''}}" href="{{ route('salary-payment.create') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Salary Payment</a>
+                <a class="collapse-item {{Request::is('payrole/salary-payment')?'active':''}}" href="{{ route('salary-payment.index') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Salary Payment List</a>
             </div>
         </div>
     </li>

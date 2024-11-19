@@ -28,8 +28,8 @@ class Employee extends Model
     {
         return $this->belongsTo(User::class);
     }
-    // public function salary_particular()
-    // {
-    //     return $this->hasMany(SalaryAssign::class, 'employee_id', 'id');
-    // }
+    public function salary_particular()
+    {
+        return $this->hasMany(SalaryAssign::class, 'employee_id', 'id');
+    }
 }

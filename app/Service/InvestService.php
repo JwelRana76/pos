@@ -23,6 +23,9 @@ class InvestService
             ->addColumn('entry_by', function ($item) {
                 return $item->user->name ?? 'N/A';
             })
+            ->addColumn('return', function ($item) {
+                return $item->return ?? 'N/A';
+            })
             ->addColumn('invest_to', function ($item) {
                 return $item->type == 0 ? 'Cash' : 'Bank';
             })

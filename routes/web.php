@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AdvanceSalaryController;
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
@@ -13,11 +14,17 @@ use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\IncomeCategoryController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\InvestController;
+use App\Http\Controllers\InvestReturnController;
+use App\Http\Controllers\LoanController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\PurchaseReturnController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SalaryAssignController;
+use App\Http\Controllers\SalaryParticularController;
+use App\Http\Controllers\SalaryPaymentController;
+use App\Http\Controllers\SalarySubmitController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\SaleReturnController;
 use App\Http\Controllers\SiteSettingController;
@@ -28,7 +35,7 @@ use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 // Route::get('/dashboard', function () {
@@ -146,6 +153,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/edit/{id}', [InvestController::class, 'edit'])->name('edit');
         Route::get('/delete/{id}', [InvestController::class, 'delete'])->name('delete');
         Route::get('/pdelete/{id}', [InvestController::class, 'pdelete'])->name('pdelete');
+    });
+    Route::group(['prefix' => 'invest-return', 'as' => 'invest_return.'], function () {
+        Route::get('/', [InvestReturnController::class, 'index'])->name('index');
+        Route::get('/view/{id}', [InvestReturnController::class, 'view'])->name('view');
+        Route::post('/store', [InvestReturnController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [InvestReturnController::class, 'edit'])->name('edit');
+        Route::post('/update', [InvestReturnController::class, 'update'])->name('update');
+        Route::get('/delete/{id}', [InvestReturnController::class, 'delete'])->name('delete');
     });
     Route::group(['prefix' => 'expense-category', 'as' => 'expense-category.'], function () {
         Route::get('/', [ExpenseCategoryController::class, 'index'])->name('index');
@@ -273,6 +288,51 @@ Route::middleware('auth')->group(function () {
         Route::get('/delete/{id}', [SaleReturnController::class, 'delete'])->name('delete');
         Route::post('/getProduct/', [SaleReturnController::class, 'getProduct'])->name('getProduct');
         Route::get('/show/{id}', [SaleReturnController::class, 'show'])->name('show');
+    });
+    Route::group(['prefix' => 'payrole/salary-particular', 'as' => 'salary-particular.'], function () {
+        Route::get('/', [SalaryParticularController::class, 'index'])->name('index');
+        Route::post('/store', [SalaryParticularController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [SalaryParticularController::class, 'edit'])->name('edit');
+        Route::get('/delete/{id}', [SalaryParticularController::class, 'delete'])->name('delete');
+    });
+    Route::group(['prefix' => 'payrole/salary-assign', 'as' => 'salary-assign.'], function () {
+        Route::get('/{id}', [SalaryAssignController::class, 'index'])->name('index');
+        Route::post('/store', [SalaryAssignController::class, 'store'])->name('store');
+        Route::get('/delete/{id}', [SalaryAssignController::class, 'delete'])->name('delete');
+        Route::get('/details/{id}', [SalaryAssignController::class, 'salarydetails']);
+    });
+    Route::group(['prefix' => 'payrole/salary-submit', 'as' => 'salary-submit.'], function () {
+        Route::get('/', [SalarySubmitController::class, 'index'])->name('index');
+        Route::get('/create', [SalarySubmitController::class, 'create'])->name('create');
+        Route::post('/store', [SalarySubmitController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [SalarySubmitController::class, 'edit'])->name('edit');
+        Route::post('/update/{id}', [SalarySubmitController::class, 'update'])->name('update');
+        Route::get('/delete/{id}', [SalarySubmitController::class, 'delete'])->name('delete');
+    });
+    Route::group(['prefix' => 'payrole/salary-payment', 'as' => 'salary-payment.'], function () {
+        Route::get('/', [SalaryPaymentController::class, 'index'])->name('index');
+        Route::get('/create', [SalaryPaymentController::class, 'create'])->name('create');
+        Route::post('/store', [SalaryPaymentController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [SalaryPaymentController::class, 'edit'])->name('edit');
+        Route::post('/update/{id}', [SalaryPaymentController::class, 'update'])->name('update');
+        Route::get('/delete/{id}', [SalaryPaymentController::class, 'delete'])->name('delete');
+        Route::get('/salary_details/{month}/{employee_id}', [SalaryPaymentController::class, 'salary_details']);
+    });
+    Route::group(['prefix' => 'payrole/advance-salary', 'as' => 'advance-salary.'], function () {
+        Route::get('/', [AdvanceSalaryController::class, 'index'])->name('index');
+        Route::get('/create', [AdvanceSalaryController::class, 'create'])->name('create');
+        Route::post('/store', [AdvanceSalaryController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [AdvanceSalaryController::class, 'edit'])->name('edit');
+        Route::post('/update/{id}', [AdvanceSalaryController::class, 'update'])->name('update');
+        Route::get('/delete/{id}', [AdvanceSalaryController::class, 'delete'])->name('delete');
+    });
+    Route::group(['prefix' => 'loan', 'as' => 'loan.'], function () {
+        Route::get('/', [LoanController::class, 'index'])->name('index');
+        Route::get('/create', [LoanController::class, 'create'])->name('create');
+        Route::post('/store', [LoanController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [LoanController::class, 'edit'])->name('edit');
+        Route::post('/update/{id}', [LoanController::class, 'update'])->name('update');
+        Route::get('/delete/{id}', [LoanController::class, 'delete'])->name('delete');
     });
 });
 

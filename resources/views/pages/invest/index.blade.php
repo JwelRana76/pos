@@ -29,6 +29,39 @@
             <x-data-table dataUrl="/invest" id="invests" :columns="$columns" />
         </div>
     </div>
+    <x-modal id="investReturn">
+        <x-form method="post" action="{{ route('invest_return.store') }}">
+                <x-input id="invest_id" type="hidden" />
+                <x-input id="balance" type="hidden" />
+                <x-input id="date" type="date" value="{{ date('Y-m-d') }}"  />
+                <x-input id="amount"  />
+                <x-button value="Save" />
+        </x-form>
+    </x-modal>
+    <x-modal id="investReturnEdit">
+        <x-form method="post" action="{{ route('invest_return.update') }}">
+                <x-input id="return_id" type="hidden" />
+                <x-input id="balance" type="hidden" />
+                <x-input id="date" type="date"  />
+                <x-input id="amount"  />
+                <x-button value="Save" />
+        </x-form>
+    </x-modal>
+    <x-large-modal id="investReturnList">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>SL</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="investReturnBody">
+
+            </tbody>
+        </table>
+    </x-large-modal>
     @push('js')
         <script>
     $(document).ready(function () {
@@ -45,7 +78,73 @@
                 $('#bank_section').addClass('d-none');
             }
         }
+        $('#investReturn').on('shown.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var balance = button.data('balance'); 
+            $('#investReturn #invest_id').val(id);
+            $('#investReturn #balance').val(balance);
+        })
+         $('#investReturn #amount').on('input', function () {
+            var balance = parseFloat($('#balance').val());
+            var amount = parseFloat($(this).val());
+            if(balance < amount){
+                alert('You can not return more than invested balance');
+                $(this).val(balance);
+            }
+        });
+        $('#investReturnList').on('shown.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            $.get("/invest-return/view/"+id,
+                function (data) {
+                    $.each(data.item, function (index,item) { 
+                         $('#investReturnBody').append(`
+                            <tr>
+                                <td>${index+1}</td>    
+                                <td>${moment(item?.created_at).format('LL')}</td>    
+                                <td>${item.amount}</td>    
+                                <td>
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                                            Action
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item text-info" href="#" data-date="${item.created_at}" data-amount="${item.amount}" data-balance="${data.balance}" data-id="${item.id}" data-target="#investReturnEdit" data-toggle="modal"><i class="fas fa-fw fa-pen"></i> Edit</a>
+                                            <a class="dropdown-item text-danger" href="/invest-return/delete/${item.id}"  onclick="return confirm('Are you sure to delete this record')"><i class="fas fa-fw fa-trash"></i> Delete</a>
+                                            
+                                        </div>
+                                    </div>    
+                                </td>    
+                            </tr>
+                         `);
+                    });   
+                }
+            );
+        })
     });
+
+    $('#investReturnEdit').on('shown.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var id = button.data('id');
+        var balance = button.data('balance'); 
+        var amount = button.data('amount'); 
+        var date = button.data('date'); 
+        $('#investReturnList').modal('hide')
+        $('#investReturnEdit #return_id').val(id);
+        $('#investReturnEdit #balance').val(parseFloat(balance) + parseFloat(amount));
+        $('#investReturnEdit #amount').val(amount);
+        $('#investReturnEdit #date').val(date.split('T')[0]);
+    })
+    $('#investReturnEdit #amount').on('input', function () {
+            var balance = parseFloat($('#investReturnEdit #balance').val());
+            var amount = parseFloat($(this).val());
+            if(balance < amount){
+                alert('You can not return more than invested balance');
+                $(this).val(balance);
+            }
+        });
+
 </script>
     @endpush
 </x-admin>
