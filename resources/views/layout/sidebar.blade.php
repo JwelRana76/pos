@@ -180,8 +180,9 @@
         </a>
         <div id="loan" class="collapse {{Request::is('loan*')?'show':''}}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item {{Request::is('loan/*')?'active':''}}" href="{{ route('loan.index') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Loan List</a>
+                <a class="collapse-item {{Request::is('loan')?'active':''}}" href="{{ route('loan.index') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Loan List</a>
                 <a class="collapse-item {{Request::is('loan/create')?'active':''}}" href="{{ route('loan.create') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Loan Create</a>
+                <a class="collapse-item {{Request::is('loan/trash')?'active':''}}" href="{{ route('loan.trash') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Trash List</a>
             </div>
         </div>
     </li>

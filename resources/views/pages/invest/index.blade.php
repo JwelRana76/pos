@@ -96,6 +96,7 @@
         $('#investReturnList').on('shown.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var id = button.data('id');
+            $('#investReturnBody').html(null);
             $.get("/invest-return/view/"+id,
                 function (data) {
                     $.each(data.item, function (index,item) { 

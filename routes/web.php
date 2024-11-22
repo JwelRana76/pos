@@ -16,6 +16,7 @@ use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\InvestController;
 use App\Http\Controllers\InvestReturnController;
 use App\Http\Controllers\LoanController;
+use App\Http\Controllers\LoanReturnController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurchaseController;
@@ -328,11 +329,22 @@ Route::middleware('auth')->group(function () {
     });
     Route::group(['prefix' => 'loan', 'as' => 'loan.'], function () {
         Route::get('/', [LoanController::class, 'index'])->name('index');
+        Route::get('/trash', [LoanController::class, 'trash'])->name('trash');
         Route::get('/create', [LoanController::class, 'create'])->name('create');
         Route::post('/store', [LoanController::class, 'store'])->name('store');
         Route::get('/edit/{id}', [LoanController::class, 'edit'])->name('edit');
+        Route::get('/restore/{id}', [LoanController::class, 'restore'])->name('restore');
         Route::post('/update/{id}', [LoanController::class, 'update'])->name('update');
         Route::get('/delete/{id}', [LoanController::class, 'delete'])->name('delete');
+        Route::get('/pdelete/{id}', [LoanController::class, 'pdelete'])->name('pdelete');
+    });
+    Route::group(['prefix' => 'loan-return', 'as' => 'loan-return.'], function () {
+        Route::get('/view/{id}', [LoanReturnController::class, 'index'])->name('index');
+        Route::get('/create', [LoanReturnController::class, 'create'])->name('create');
+        Route::post('/store', [LoanReturnController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [LoanReturnController::class, 'edit'])->name('edit');
+        Route::post('/update', [LoanReturnController::class, 'update'])->name('update');
+        Route::get('/delete/{id}', [LoanReturnController::class, 'delete'])->name('delete');
     });
 });
 
