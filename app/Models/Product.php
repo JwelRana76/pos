@@ -46,9 +46,10 @@ class Product extends Model
         ->where('product_purchases.product_id', $this->id)->sum('product_purchases.qty');
         $sale = Sale::join('product_sales', 'sales.id', 'product_sales.sale_id')
         ->where('product_sales.product_id', $this->id)->sum('product_sales.qty');
-        // $purchase_return = PurchaseReturnProduct::where('product_id', $this->id)->sum('qty');
-        // $sale_return = SaleReturnProduct::where('product_id', $this->id)->sum('qty');
-        // return $purchase - $sale - $purchase_return + $sale_return;
-        return $purchase - $sale;
+        $purchase_return = ProductPurchaseReturn::where('product_id', $this->id)->sum('qty');
+        $sale_return = ProductSaleReturn::where('product_id', $this->id)->sum('qty');
+        $adjustment_plus = ProductAdjustment::where('product_id', $this->id)->where('type', 1)->sum('qty');
+        $adjustment_minus = ProductAdjustment::where('product_id', $this->id)->where('type', 0)->sum('qty');
+        return ($purchase - $sale - $purchase_return + $sale_return + $adjustment_plus - $adjustment_minus);
     }
 }

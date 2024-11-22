@@ -34,6 +34,12 @@ class ProductService
             ->addColumn('brand', function ($item) {
                 return $item->brand->name ?? 'N/A';
             })
+            ->addColumn('cost', function ($item) {
+                return number_format($item->cost, 2) ?? 'N/A';
+            })
+            ->addColumn('price', function ($item) {
+                return number_format($item->price, 2) ?? 'N/A';
+            })
             ->addColumn('stock', function ($item) {
                 return $item->stock;
             })

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AdjustmentController;
 use App\Http\Controllers\AdvanceSalaryController;
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\BrandController;
@@ -240,6 +241,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/delete/{id}', [ProductController::class, 'delete'])->name('delete');
         Route::get('/pdelete/{id}', [ProductController::class, 'pdelete'])->name('pdelete');
         Route::post('/import', [ProductController::class, 'import'])->name('import');
+    });
+    Route::group(['prefix' => 'adjustment', 'as' => 'adjustment.'], function () {
+        Route::get('/', [AdjustmentController::class, 'index'])->name('index');
+        Route::get('/create', [AdjustmentController::class, 'create'])->name('create');
+        Route::post('/store', [AdjustmentController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [AdjustmentController::class, 'edit'])->name('edit');
+        Route::post('/update/{id}', [AdjustmentController::class, 'update'])->name('update');
+        Route::get('/delete/{id}', [AdjustmentController::class, 'delete'])->name('delete');
+        Route::get('/show/{id}', [AdjustmentController::class, 'show'])->name('show');
     });
     Route::group(['prefix' => 'purchase', 'as' => 'purchase.'], function () {
         Route::get('/', [PurchaseController::class, 'index'])->name('index');

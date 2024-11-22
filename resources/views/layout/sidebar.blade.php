@@ -35,6 +35,19 @@
         </div>
     </li>
     <li class="nav-item">
+        <a class="nav-link {{Request::is('adjustment*')?'':'collapsed'}}" href="#" data-toggle="collapse" data-target="#adjustment"
+            aria-expanded="true" aria-controls="adjustment">
+            <i class="fa-brands fa-wpforms"></i>
+            <span>Adjustment</span>
+        </a>
+        <div id="adjustment" class="collapse {{Request::is('adjustment*')?'show':''}}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item {{Request::is('adjustment')?'active':''}}" href="{{ route('adjustment.index') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Adjustment List</a>
+                <a class="collapse-item {{Request::is('adjustment/create')?'active':''}}" href="{{ route('adjustment.create') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Add adjustment</a>
+            </div>
+        </div>
+    </li>
+    <li class="nav-item">
         <a class="nav-link {{Request::is('purchase*')?'':'collapsed'}}" href="#" data-toggle="collapse" data-target="#purchase"
             aria-expanded="true" aria-controls="purchase">
             <i class="fas fa-fw fa-shopping-cart"></i>
