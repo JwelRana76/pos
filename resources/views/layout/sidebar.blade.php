@@ -236,6 +236,22 @@
         </div>
     </li>
     <li class="nav-item">
+        <a class="nav-link {{Request::is('report*')?'':'collapsed'}}" href="#" data-toggle="collapse" data-target="#report"
+            aria-expanded="true" aria-controls="report">
+            <i class="fas fa-fw fa-credit-card"></i>
+            <span>Report</span>
+        </a>
+        <div id="report" class="collapse {{Request::is('report*')?'show':''}}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item {{Request::is('report/product')?'active':''}}" href="{{ route('report.product') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Product Report</a>
+                <a class="collapse-item {{Request::is('report/sale')?'active':''}}" href="{{ route('report.sale') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Sale Report</a>
+                <a class="collapse-item {{Request::is('report/purchase')?'active':''}}" href="{{ route('report.purchase') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Purchase Report</a>
+                <a class="collapse-item {{Request::is('report/income')?'active':''}}" href="{{ route('report.income') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Income Report</a>
+                <a class="collapse-item {{Request::is('report/expense')?'active':''}}" href="{{ route('report.expense') }}"><i class="fas fa-fw fa-arrow-right mr-2"></i> Expense Report</a>
+            </div>
+        </div>
+    </li>
+    <li class="nav-item">
         <a class="nav-link {{ Request::is('setting*') ? '' : 'collapsed' }}" href="#" data-toggle="collapse"
             data-target="#setting" aria-expanded="true" aria-controls="setting">
             <i class="fas fa-fw fa-cog"></i>

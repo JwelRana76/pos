@@ -22,6 +22,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\PurchaseReturnController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SalaryAssignController;
 use App\Http\Controllers\SalaryParticularController;
@@ -355,6 +356,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/edit/{id}', [LoanReturnController::class, 'edit'])->name('edit');
         Route::post('/update', [LoanReturnController::class, 'update'])->name('update');
         Route::get('/delete/{id}', [LoanReturnController::class, 'delete'])->name('delete');
+    });
+    Route::group(['prefix' => 'report', 'as' => 'report.'], function () {
+        Route::get('/product', [ReportController::class, 'productReport'])->name('product');
+        Route::get('/sale', [ReportController::class, 'saleReport'])->name('sale');
+        Route::get('/purchase', [ReportController::class, 'purchaseReport'])->name('purchase');
+        Route::get('/income', [ReportController::class, 'incomeReport'])->name('income');
+        Route::get('/expense', [ReportController::class, 'expenseReport'])->name('expense');
     });
 });
 
