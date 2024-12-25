@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\District;
 use App\Models\Division;
+use App\Models\Sale;
+use App\Models\SalePayment;
 use App\Service\CustomerService;
 use Illuminate\Http\Request;
+use Pest\ArchPresets\Custom;
 
 class CustomerController extends Controller
 {
@@ -51,6 +54,18 @@ class CustomerController extends Controller
         $data = $request->all();
         $message = $this->baseService->create($data);
         return redirect()->route('customer.index')->with($message);
+    }
+    public function customerstore(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'contact' => 'required',
+            'district' => 'required',
+        ]);
+        $data = $request->all();
+        $message = $this->baseService->create($data);
+        $customer = Customer::get();
+        return $customer;
     }
     function edit($id)
     {

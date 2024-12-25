@@ -18,6 +18,9 @@ class ProductController extends Controller
     }
     public function index()
     {
+        if (!userHasPermission('product-index')) {
+            return view('404');
+        }
         $item = $this->baseService->Index();
         $columns = Product::$columns;
         if (request()->ajax()) {
@@ -27,6 +30,9 @@ class ProductController extends Controller
     }
     public function trash()
     {
+        if (!userHasPermission('product-advance')) {
+            return view('404');
+        }
         $item = $this->baseService->Trash();
         $columns = Product::$columns;
         if (request()->ajax()) {
@@ -36,6 +42,9 @@ class ProductController extends Controller
     }
     public function create()
     {
+        if (!userHasPermission('product-store')) {
+            return view('404');
+        }
         $categories = Category::get();
         $brands = Brand::get();
         $sizes = Size::get();
@@ -44,6 +53,9 @@ class ProductController extends Controller
     }
     public function store(Request $request)
     {
+        if (!userHasPermission('product-store')) {
+            return view('404');
+        }
         $request->validate([
             'name' => 'required',
             'price' => 'required',
@@ -55,6 +67,9 @@ class ProductController extends Controller
     }
     function edit($id)
     {
+        if (!userHasPermission('product-update')) {
+            return view('404');
+        }
         $product = Product::findOrFail($id);
         $categories = Category::get();
         $brands = Brand::get();
@@ -64,6 +79,9 @@ class ProductController extends Controller
     }
     public function update(Request $request, $id)
     {
+        if (!userHasPermission('product-update')) {
+            return view('404');
+        }
         $request->validate([
             'name' => 'required',
             'price' => 'required',
@@ -75,23 +93,34 @@ class ProductController extends Controller
     }
     function delete($id)
     {
+        if (!userHasPermission('product-delete')) {
+            return view('404');
+        }
         Product::findOrFail($id)->delete();
         return redirect()->route('product.index')->with('success', 'Product Deleted Successfully');
     }
     function restore($id)
     {
+        if (!userHasPermission('product-advance')) {
+            return view('404');
+        }
         Product::withTrashed()->findOrFail($id)->restore();
         return redirect()->route('product.index')->with('success', 'Product Restored Successfully');
     }
     function pdelete($id)
     {
+        if (!userHasPermission('product-advance')) {
+            return view('404');
+        }
         Product::withTrashed()->findOrFail($id)->forceDelete();
         return redirect()->route('product.trash')->with('success', 'Product Permanently Deleted Successfully');
     }
 
     function Import(Request $request)
     {
-
+        if (!userHasPermission('product-advance')) {
+            return view('404');
+        }
         $request->validate([
             'product_file' => 'required|file|mimes:csv,txt',
         ]);

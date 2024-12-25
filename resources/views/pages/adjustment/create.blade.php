@@ -123,7 +123,6 @@
       
       $(document).on('click', '#remove', function() {
         $(this).closest('tr').remove();
-        calculation();
       });
 
   });

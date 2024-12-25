@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use App\Models\Account;
+use App\Models\Bank;
 use App\Models\Invest;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -42,6 +44,9 @@ class InvestService
             })
             ->addColumn('entry_by', function ($item) {
                 return $item->user->name ?? 'N/A';
+            })
+            ->addColumn('return', function ($item) {
+                return 0;
             })
             ->addColumn('invest_to', function ($item) {
                 return $item->type == 0 ? 'Cash' : 'Bank';

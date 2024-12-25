@@ -17,7 +17,7 @@ class Loan extends Model
         ['name' => 'name', 'data' => 'name'],
         ['name' => 'contact', 'data' => 'contact'],
         ['name' => 'amount', 'data' => 'amount'],
-        ['name' => 'interest_rate', 'data' => 'interest_rate'],
+        ['name' => 'type', 'data' => 'type'],
         ['name' => 'return', 'data' => 'return'],
         ['name' => 'note', 'data' => 'note'],
         ['name' => 'action', 'data' => 'action'],

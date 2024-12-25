@@ -26,7 +26,7 @@ class User extends Authenticatable
 
     public static $columns = [
         ['name' => 'name', 'data' => 'name'],
-        ['name' => 'username', 'data' => 'username'],
+        ['name' => 'email', 'data' => 'email'],
         ['name' => 'role', 'data' => 'role'],
         ['name' => 'action', 'data' => 'action'],
     ];
@@ -52,5 +52,9 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+    function role()
+    {
+        return $this->hasOne(UserHasRole::class, 'user_id', 'id');
     }
 }

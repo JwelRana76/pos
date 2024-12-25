@@ -11,17 +11,20 @@ use Exception;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
-class UsersController extends Controller
+class UserController extends Controller
 {
 
     public function index()
     {
-        $user = User::active();
+        $user = User::get();
         $columns = User::$columns;
         if (request()->ajax()) {
             return DataTables::of($user)
                 ->addColumn('role', function ($user) {
                     return $user->role->role->name ?? 'N/A';
+                })
+                ->addColumn('email', function ($user) {
+                    return $user->email ?? 'N/A';
                 })
                 ->addColumn('action', fn($item) => view('pages.user.action', compact('item'))->render())
                 ->make(true);
@@ -32,7 +35,8 @@ class UsersController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|unique:roles',
+            'name' => 'required',
+            'email' => 'required|unique:users',
             'password' => 'required|min:6',
             'conform_password' => 'required|same:password',
             'role_id' => 'required',
@@ -41,7 +45,7 @@ class UsersController extends Controller
         try {
             $user = User::create([
                 'name' => $request->name,
-                'username' => $request->username,
+                'email' => $request->email,
                 'password' => Hash::make($request->password),
             ]);
             $user->role()->create([
@@ -64,7 +68,7 @@ class UsersController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'username' => 'required',
+            'email' => 'required',
             'role_id' => 'required',
         ]);
 
@@ -75,7 +79,7 @@ class UsersController extends Controller
             ]);
         }
         $data['name'] = $request->name;
-        $data['username'] = $request->username;
+        $data['email'] = $request->email;
         if ($request->password) {
             $data['password'] = Hash::make($request->password);
         }
@@ -84,9 +88,7 @@ class UsersController extends Controller
     }
     public function delete($id)
     {
-        User::findOrFail($id)->update([
-            'is_active' => false,
-        ]);
+        User::findOrFail($id)->delete();
         return redirect()->route('user.index')->with('success', 'User Deleted Successfully');
     }
 

@@ -17,6 +17,9 @@ class EmployeeController extends Controller
     }
     public function index()
     {
+        if (!userHasPermission('employee-index')) {
+            return view('404');
+        }
         $item = $this->baseService->Index();
         $columns = Employee::$columns;
         if (request()->ajax()) {
@@ -26,6 +29,9 @@ class EmployeeController extends Controller
     }
     public function trash()
     {
+        if (!userHasPermission('employee-advance')) {
+            return view('404');
+        }
         $item = $this->baseService->Trash();
         $columns = Employee::$columns;
         if (request()->ajax()) {
@@ -35,6 +41,9 @@ class EmployeeController extends Controller
     }
     public function create()
     {
+        if (!userHasPermission('employee-store')) {
+            return view('404');
+        }
         $districts = District::get();
         $divisions = Division::get();
         $roles = Role::all();
@@ -42,6 +51,9 @@ class EmployeeController extends Controller
     }
     public function store(Request $request)
     {
+        if (!userHasPermission('employee-store')) {
+            return view('404');
+        }
         $request->validate([
             'name' => 'required',
             'contact' => 'required',
@@ -61,6 +73,9 @@ class EmployeeController extends Controller
     }
     function edit($id)
     {
+        if (!userHasPermission('employee-update')) {
+            return view('404');
+        }
         $employee = Employee::findOrFail($id);
         $districts = District::get();
         $divisions = Division::get();
@@ -69,6 +84,9 @@ class EmployeeController extends Controller
     }
     public function update(Request $request, $id)
     {
+        if (!userHasPermission('employee-update')) {
+            return view('404');
+        }
         $request->validate([
             'name' => 'required',
             'contact' => 'required',
@@ -88,16 +106,25 @@ class EmployeeController extends Controller
     }
     function delete($id)
     {
+        if (!userHasPermission('employee-delete')) {
+            return view('404');
+        }
         Employee::findOrFail($id)->delete();
         return redirect()->route('employee.index')->with('success', 'Employee Deleted Successfully');
     }
     function restore($id)
     {
+        if (!userHasPermission('employee-advance')) {
+            return view('404');
+        }
         Employee::withTrashed()->findOrFail($id)->delete();
         return redirect()->route('employee.index')->with('success', 'Employee Restored Successfully');
     }
     function pdelete($id)
     {
+        if (!userHasPermission('employee-advance')) {
+            return view('404');
+        }
         Employee::withTrashed()->findOrFail($id)->forceDelete();
         return redirect()->route('employee.index')->with('success', 'Employee Permanently Deleted Successfully');
     }

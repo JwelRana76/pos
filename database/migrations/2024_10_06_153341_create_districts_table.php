@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('districts', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('division_id')->constrained('divisions')->onDelete('cascade');
             $table->string('name')->unique();
             $table->string('code')->unique();
             $table->softDeletes();

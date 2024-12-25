@@ -7,10 +7,10 @@
           <x-input id="date" value="{{ $sale->created_at->format('Y-m-d') }}" type="date" required/>
         </div>
         <div class="col-md-4">
-          <x-input id="voucher_no" value="{{ $sale->voucher_no }}" required/>
+          <x-input id="voucher_no" value="{{ $sale->voucher_no }}" readonly/>
         </div>
         <div class="col-md-4">
-          <x-select id="customer" selectedId="{{ $sale->customer_id }}" required :options="$customers" />
+          <x-select id="customer" selectedId="{{ $sale->customer_id }}"  has-modal modal-open-id="customer_model" required :options="$customers" />
         </div>
         <div class="col-md-12 mb-3">
           <label for="code">Product</label>
@@ -85,7 +85,37 @@
       </div>
       </x-form>
     </div>
-
+    
+    @php
+        $districts = App\Models\District::get();
+    @endphp
+    <x-large-modal id="customer_model">
+      <form id="customerForm">
+        @csrf
+        <div class="row">
+        <div class="col-md-6">
+          <x-input id="name" required/>
+        </div>
+        <div class="col-md-6">
+          <x-select id="district" :options="$districts"/>
+        </div>
+        <div class="col-md-6">
+          <x-input id="contact" required/>
+        </div>
+        <div class="col-md-6">
+          <x-input id="email" type="email"/>
+        </div>
+          <x-input type="hidden" id="opening_due" value="0" />
+        <div class="col-md-12">
+          <x-input id="address" required/>
+        </div>
+        <div class="col-md-12">
+          <x-button value="Save" />
+        </div>
+        
+      </div>
+      </form>
+    </x-large-modal>
     @php
       $customerss = App\Models\Customer::get()->map(function($customer) {
           return [
@@ -96,6 +126,60 @@
     @endphp
 @push('js')
   <script>
+    $(document).ready(function() {
+      $('#customerForm').on('submit', function(e) {
+        e.preventDefault(); // Prevent the default form submission
+        var formData = {
+        _token: $('input[name="_token"]').val(),
+        district: $('#district').val(),
+        name: $('#name').val(),
+        contact: $('#contact').val(),
+        email: $('#email').val(),
+        address: $('#address').val(),
+        };
+
+        // Use AJAX to send the data to the server
+        $.ajax({
+        type: 'POST',
+        url: '{{ route("customer.customerstore") }}',
+        data: formData,
+        success: function(response) {
+            // Handle the success response here
+          console.log(response);
+          $('#customer_model').modal('hide');
+          var selectfield = '[name="customer"]';
+          updateCategorySelect(response,selectfield);
+
+          var lastCategoryId = response[response.length - 1].id;
+          var selectElement = $('[name="customer"]'); // Use the correct selector
+          console.log(lastCategoryId);
+          selectElement.selectpicker('val', lastCategoryId);
+        },
+        error: function(error) {
+            // Handle any errors here
+          console.error(error);
+        }
+        });
+      });
+      function updateCategorySelect(categories, selectfiled) {
+          // Assuming "categories" is an array of objects with "id" and "name" fields
+          var $categorySelect = $(selectfiled);
+          $categorySelect.empty(); // Clear the current options
+
+          // Add the new options
+          categories.forEach(function(category) {
+              $categorySelect.append(
+                  $('<option>', {
+                      value: category.id,
+                      text: category.name
+                  })
+              );
+          });
+
+          // Update the selectpicker
+          $categorySelect.selectpicker('refresh');
+      }
+    })
     $(document).ready(function() {
       var customers = @json($customerss);
       $(document).on('change', '#customer', function() {

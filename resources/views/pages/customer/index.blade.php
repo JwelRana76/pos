@@ -32,7 +32,11 @@
     </x-large-modal>
     @push('js')
         <script>
-                
+            $('#customer_payment').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget); // Button that triggered the modal
+                var dataId = button.data('id');
+                $('#customer_payment #customer').val(dataId).change();
+            });
             function paymentdetails(Id){
                 $.get('/customer/payment/details/'+Id,
                     function (data) {

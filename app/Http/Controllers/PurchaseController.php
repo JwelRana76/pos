@@ -17,6 +17,9 @@ class PurchaseController extends Controller
     }
     public function index(Request $request)
     {
+        if (!userHasPermission('purchase-index')) {
+            return view('404');
+        }
         $sales = Purchase::query()->orderBy('purchases.id', 'desc');
 
         if ($request->ajax()) {
@@ -58,6 +61,9 @@ class PurchaseController extends Controller
     }
     public function trash(Request $request)
     {
+        if (!userHasPermission('purchase-advance')) {
+            return view('404');
+        }
         $purchases = Purchase::onlyTrashed()->orderBy('purchases.id', 'desc');
 
         if ($request->ajax()) {
@@ -91,6 +97,9 @@ class PurchaseController extends Controller
     }
     public function create()
     {
+        if (!userHasPermission('purchase-store')) {
+            return view('404');
+        }
         $suppliers = Supplier::get();
         return view('pages.purchase.create', compact('suppliers'));
     }
@@ -102,6 +111,9 @@ class PurchaseController extends Controller
     }
     public function store(Request $request)
     {
+        if (!userHasPermission('purchase-store')) {
+            return view('404');
+        }
         $request->validate([
             'supplier' => 'required',
         ]);
@@ -111,12 +123,18 @@ class PurchaseController extends Controller
     }
     function edit($id)
     {
+        if (!userHasPermission('purchase-update')) {
+            return view('404');
+        }
         $purchase = Purchase::findOrFail($id);
-        $suppliers = Supplier::active();
+        $suppliers = Supplier::get();
         return view('pages.purchase.edit', compact('suppliers', 'purchase'));
     }
     public function update(Request $request, $id)
     {
+        if (!userHasPermission('purchase-update')) {
+            return view('404');
+        }
         $request->validate([
             'supplier' => 'required',
         ]);
@@ -126,21 +144,41 @@ class PurchaseController extends Controller
     }
     function delete($id)
     {
+        if (!userHasPermission('purchase-delete')) {
+            return view('404');
+        }
         $this->baseService->delete($id);
         return redirect()->route('purchase.index')->with('success', 'Purchase Deleted Successfully');
     }
     function restore($id)
     {
+        if (!userHasPermission('purchase-delete')) {
+            return view('404');
+        }
         $this->baseService->restore($id);
         return redirect()->route('purchase.index')->with('success', 'Purchase Restored Successfully');
     }
     function pdelete($id)
     {
+        if (!userHasPermission('purchase-advance')) {
+            return view('404');
+        }
         Purchase::onlyTrashed()->findOrFail($id)->forceDelete();
         return redirect()->route('purchase.trash')->with('success', 'Purchase Permanently Deleted Successfully');
     }
+    function receipt($id)
+    {
+        if (!userHasPermission('purchase-advance')) {
+            return view('404');
+        }
+        $purchase = Purchase::findOrFail($id);
+        return view('pages.purchase.receipt', compact('purchase'));
+    }
     function show($id)
     {
+        if (!userHasPermission('purchase-advance')) {
+            return view('404');
+        }
         $purchase = Purchase::with('supplier')->where('id', $id)->first();
         $items = ProductPurchase::where('purchase_id', $id)
             ->with(['product' => function ($query) {

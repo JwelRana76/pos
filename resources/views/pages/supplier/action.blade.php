@@ -5,7 +5,7 @@
   <div class="dropdown-menu">
     <a class="dropdown-item text-info" href="{{ route('supplier.edit',$item->id) }}" ><i class="fas fa-fw fa-pen mr-2"></i> Edit</a>
     
-    <a href="#" class="dropdown-item text-info" data-target="#supplierPaymentModal" data-toggle="modal" >
+    <a href="#" class="dropdown-item text-info" data-id="{{ $item->id }}" data-target="#supplier_payment" data-toggle="modal" >
       <i class="fa fa-money-bill mr-2"></i>
       <span>Payment</span>
     </a>

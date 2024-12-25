@@ -31,6 +31,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="/css/custom.css">
     <link rel="stylesheet" href="/css/toastr.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+
+    
 
 </head>
 
@@ -145,6 +148,8 @@
     <!-- Include Toastr CSS and JS via CDN -->
     <script src="/js/bootstrap-select.min.js"></script>
     <script src="/js/toastr.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
     {{-- toastr notification section --}}
     <script>
     toastr.options = {

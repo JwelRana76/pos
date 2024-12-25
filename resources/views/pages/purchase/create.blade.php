@@ -1,13 +1,13 @@
 <x-admin title="Purchase Create">
     <x-page-header head="Purchase Create" />
     <div class="card p-3">
-      <x-form method="post" action="{{ route('purchase.store') }}">
+      <x-form method="post" id="purchaseForm" action="{{ route('purchase.store') }}">
       <div class="row">
         <div class="col-md-4">
           <x-input id="date" value="{{ date('Y-m-d') }}" type="date" required/>
         </div>
         <div class="col-md-4">
-          <x-select id="supplier" required :options="$suppliers" />
+          <x-select id="supplier" required :options="$suppliers" has-modal modal-open-id="supplier_model"  />
         </div>
         <div class="col-md-12 mb-3">
           <label for="code">Product</label>
@@ -67,7 +67,36 @@
       </div>
       </x-form>
     </div>
-
+    @php
+        $districts = App\Models\District::get();
+    @endphp
+    <x-large-modal id="supplier_model">
+      <form id="supplierForm">
+        @csrf
+        <div class="row">
+        <div class="col-md-6">
+          <x-input id="name" required/>
+        </div>
+        <div class="col-md-6">
+          <x-select id="district" :options="$districts"/>
+        </div>
+        <div class="col-md-6">
+          <x-input id="contact" required/>
+        </div>
+        <div class="col-md-6">
+          <x-input id="email" type="email"/>
+        </div>
+          <x-input type="hidden" id="opening_due" value="0" />
+        <div class="col-md-12">
+          <x-input id="address" required/>
+        </div>
+        <div class="col-md-12">
+          <x-button value="Save" />
+        </div>
+        
+      </div>
+      </form>
+    </x-large-modal>
     @php
       $supplierss = App\Models\Supplier::get()->map(function($supplier) {
           return [
@@ -79,6 +108,62 @@
 @push('js')
   <script>
     $(document).ready(function() {
+      $('#supplierForm').on('submit', function(e) {
+        e.preventDefault(); // Prevent the default form submission
+        var formData = {
+        _token: $('input[name="_token"]').val(),
+        district: $('#district').val(),
+        name: $('#name').val(),
+        contact: $('#contact').val(),
+        email: $('#email').val(),
+        address: $('#address').val(),
+        };
+
+        // Use AJAX to send the data to the server
+        $.ajax({
+        type: 'POST',
+        url: '{{ route("supplier.supplierstore") }}',
+        data: formData,
+        success: function(response) {
+            // Handle the success response here
+          console.log(response);
+          $('#supplier_model').modal('hide');
+          var selectfield = '#purchaseForm select[name="supplier"]';
+          updateCategorySelect(response,selectfield);
+
+          var lastCategoryId = response[response.length - 1].id;
+          var selectElement = $('#purchaseForm select[name="supplier"]'); // Use the correct selector
+          console.log(lastCategoryId);
+          selectElement.selectpicker('val', lastCategoryId);
+        },
+        error: function(error) {
+            // Handle any errors here
+          console.error(error);
+        }
+        });
+      });
+      
+    })
+    function updateCategorySelect(categories, selectfiled) {
+          // Assuming "categories" is an array of objects with "id" and "name" fields
+          var $categorySelect = $(selectfiled);
+          $categorySelect.empty(); // Clear the current options
+
+          // Add the new options
+          categories.forEach(function(category) {
+              $categorySelect.append(
+                  $('<option>', {
+                      value: category.id,
+                      text: category.name
+                  })
+              );
+          });
+
+          // Update the selectpicker
+          $categorySelect.selectpicker('refresh');
+      }
+    $(document).ready(function() {
+
       var suppliers = @json($supplierss);
       $(document).on('change', '#supplier', function() {
           var selectedSupplierId = $(this).val();
@@ -173,10 +258,10 @@
         sutotal_increment(row);
       });
       function sutotal_increment(row){
-        var qty = parseInt(row.find('#quantity').val());
-        var cost = parseInt(row.find('#cost').val()); // Assuming there's a class named 'stock' for the stock cell
+        var qty = parseFloat(row.find('#quantity').val());
+        var cost = parseFloat(row.find('#cost').val()); // Assuming there's a class named 'stock' for the stock cell
         var subtotal = qty * cost;
-        row.find('.sub_total').text(subtotal);
+        row.find('.sub_total').text(subtotal.toFixed(2));
         calculation();
       }
       $(document).on('click', '#remove', function() {

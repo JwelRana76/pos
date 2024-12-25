@@ -14,14 +14,6 @@
                     @endforeach
                 </tr>
             </thead>
-            <tfoot>
-                <tr>
-                    <th></th> <!-- Footer for the checkbox column -->
-                    @foreach ($columns as $column)
-                        <th></th> <!-- Empty footer cells to be filled by DataTable's footerCallback -->
-                    @endforeach
-                </tr>
-            </tfoot>
         </table>
     </div>
 </div>

@@ -1,8 +1,5 @@
 <x-admin title="User">
     <x-page-header head="User" />
-    <button type="button" class="btn btn-sm btn-primary my-2" data-toggle="modal" data-target="#add_user">
-        <i class="fas fa-fw fa-plus"></i> Add User
-    </button>
     <div class="row">
         <div class="col-md-8">
             <x-data-table dataUrl="/setting/user" id="user" :columns="$columns" />
@@ -11,7 +8,7 @@
             <x-card header="User Create">
                 <x-form method="post" action="{{ route('user.store') }}">
                     <x-input id="name" />
-                    <x-input id="username" />
+                    <x-input type="email" id="email" />
                     <x-input type="password" id="password" />
                     <x-input type="password" id="conform_password" />
                     <x-select id="role_id" :options="$roles" />

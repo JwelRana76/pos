@@ -16,6 +16,9 @@ class LoanController extends Controller
     public function index()
     {
 
+        if (!userHasPermission('loan-index')) {
+            return view('404');
+        }
         $item = $this->baseService->Index();
         $columns = Loan::$columns;
         if (request()->ajax()) {
@@ -26,6 +29,9 @@ class LoanController extends Controller
     public function trash()
     {
 
+        if (!userHasPermission('loan-advance')) {
+            return view('404');
+        }
         $item = $this->baseService->Trash();
         $columns = Loan::$columns;
         if (request()->ajax()) {
@@ -35,17 +41,26 @@ class LoanController extends Controller
     }
     public function create()
     {
+        if (!userHasPermission('loan-store')) {
+            return view('404');
+        }
         $accounts = Account::get();
         return view('pages.loan.create', compact('accounts'));
     }
     public function edit($id)
     {
+        if (!userHasPermission('loan-update')) {
+            return view('404');
+        }
         $loan = Loan::findOrFail($id);
         return view('pages.loan.edit', compact('loan'));
     }
 
     public function store(Request $request)
     {
+        if (!userHasPermission('loan-store')) {
+            return view('404');
+        }
         if ($request->id == null) {
             $request->validate([
                 'amount' => 'required',
@@ -57,6 +72,9 @@ class LoanController extends Controller
     }
     public function update(Request $request, $id)
     {
+        if (!userHasPermission('loan-update')) {
+            return view('404');
+        }
         if ($request->id == null) {
             $request->validate([
                 'amount' => 'required',
@@ -69,16 +87,25 @@ class LoanController extends Controller
     }
     function delete($id)
     {
+        if (!userHasPermission('loan-delete')) {
+            return view('404');
+        }
         Loan::findOrFail($id)->delete();
         return redirect()->route('loan.index')->with('success', 'Loan Deleted Successfully');
     }
     function restore($id)
     {
+        if (!userHasPermission('loan-advance')) {
+            return view('404');
+        }
         $loan = Loan::withTrashed()->findOrFail($id)->restore();
         return redirect()->route('loan.index')->with('success', 'Loan Restored Successfully');
     }
     function pdelete($id)
     {
+        if (!userHasPermission('loan-advance')) {
+            return view('404');
+        }
         Loan::withTrashed()->findOrFail($id)->forceDelete();
         return redirect()->route('loan.trash')->with('success', 'Loan Permanently Deleted Successfully');
     }

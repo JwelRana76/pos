@@ -51,8 +51,8 @@
     <x-modal id="paymentModal">
         <x-form method="post" action="{{ route('supplier.payment') }}">
             <div class="row mb-3">
-                <x-input id="purchase_id" type="hidden" />
-                <x-input id="supplier_id" type="hidden" />
+                <x-input id="voucher" type="hidden" />
+                <x-input id="supplier" type="hidden" />
                 <div class="col-md-6">
                     <x-input type="date" id="date" value="{{ date('Y-m-d') }}" />
                 </div>
@@ -76,7 +76,7 @@
                     <x-select id="account" selectedId="1" :options="$accounts" />
                 </div>
                 <div class="col-md-6 d-none" id="bank_part">
-                    <x-select id="bank" :options="$banks" />
+                    <x-select id="bank" key="bank_name" :options="$banks" />
                 </div>
                 <div class="col-md-12">
                     <x-textarea id="note"/>
@@ -86,19 +86,30 @@
                 </div>
         </x-form>
     </x-modal>
+    @php
+        $accounts = App\Models\Account::select('name as name', 'id', 'account_no')
+            ->get()
+            ->append('balance');
+        $banks = App\Models\Bank::select('bank_name as name', 'id', 'account_no')
+            ->get()
+            ->append('balance');
+    @endphp
     @push('js')
         <script>
-            $('#payment_method').on('change', function () {
+            $('#paymentModal #payment_method').on('change', function () {
+                $('#paymentModal').find('#paid').val(null);
+                const payable = parseFloat( $('#paymentModal').find('#payable').val());
+                $('#paymentModal').find('#current_due').val(payable)
                 if($(this).val() == 0){
-                    $('#account_part').removeClass('d-none');
-                    $('#bank_part').addClass('d-none');
-                    $('#account').attr('required', 'true');
-                    $('#bank').removeAttr('required');
+                    $('#paymentModal #account_part').removeClass('d-none');
+                    $('#paymentModal #bank_part').addClass('d-none');
+                    $('#paymentModal #account').attr('required', 'true');
+                    $('#paymentModal #bank').removeAttr('required');
                 } else {
-                    $('#bank_part').removeClass('d-none');
-                    $('#account_part').addClass('d-none');
-                    $('#account').removeAttr('required');
-                    $('#bank').attr('required', 'true');
+                    $('#paymentModal #bank_part').removeClass('d-none');
+                    $('#paymentModal #account_part').addClass('d-none');
+                    $('#paymentModal #account').removeAttr('required');
+                    $('#paymentModal #bank').attr('required', 'true');
                 }
             });
 
@@ -274,22 +285,47 @@
                     console.log(data.paid);
                     $('#paymentModal').find('#payable').val(data.purchase.grand_total - data.paid);
                     $('#paymentModal').find('#current_due').val(data.purchase.grand_total - data.paid);
-                    $('#paymentModal').find('#purchase_id').val(data.purchase.id);
-                    $('#paymentModal').find('#supplier_id').val(data.purchase.supplier_id);
+                    $('#paymentModal').find('#voucher').val(data.purchase.id);
+                    $('#paymentModal').find('#supplier').val(data.purchase.supplier_id);
                 }
             );
         })
         $('#paymentModal').find('#paid').on('input',function(){
             varifyPayment();
         })
+        const accounts = @json($accounts);
+        const banks = @json($banks);
         function varifyPayment(){
             const payable = parseFloat( $('#paymentModal').find('#payable').val());
             const paid = parseFloat( $('#paymentModal').find('#paid').val());
-            $('#paymentModal').find('#current_due').val(payable - paid)
-            if(paid > payable){
-                alert(`You can not pay more than ${payable}`);
-                $('#paymentModal').find('#paid').val(payable);
-                $('#paymentModal').find('#current_due').val(0)
+            $('#paymentModal').find('#current_due').val((payable - paid).toFixed(2))
+            var payment_method = $('#paymentModal #payment_method').val();
+            if(payment_method){
+                    var bank = $('#paymentModal #bank').val();
+                    var account = $('#paymentModal #account').val();
+                    if(payment_method == 0 && account){
+                        var filteredBank = accounts.find(item => item.id == account);
+                        var balance = parseFloat(filteredBank.balance);
+                        if(paid > balance){
+                            alert(`You Account Balance ${balance}`);
+                            $('#paymentModal').find('#paid').val(balance);
+                        }
+                    }else{
+                        var filteredBank = banks.find(item => item.id == bank);
+                        var balance = parseFloat(filteredBank.balance);
+                        if(paid > balance){
+                            alert(`You Bank Balance ${balance}`);
+                            $('#paymentModal').find('#paid').val(balance);
+                        }
+                    }        
+                    if(paid > payable){
+                        alert(`You can not pay more than ${payable}`);
+                        $('#paymentModal').find('#paid').val(payable);
+                        $('#paymentModal').find('#current_due').val(0)
+                    }
+            }else{
+                alert('Select Payment Method First');
+                $('#paymentModal').find('#paid').val(null)
             }
         }
         </script>

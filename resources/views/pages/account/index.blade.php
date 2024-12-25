@@ -35,6 +35,36 @@
     </div>
     @push('js')
         <script>
+             $(document).ready(function () {
+                // Re-initialize Bootstrap Toggle on table draw
+                $('#accounts').on('draw.dt', function () {
+                    $('.toggle-switch').bootstrapToggle();
+                });
+
+                // Initialize Bootstrap Toggle for the first time
+                $('.toggle-switch').bootstrapToggle();
+            });
+            $(document).on('change', '.toggle-switch', function () {
+                let itemId = $(this).data('id');
+                let status = $(this).is(':checked') ? 1 : 0;
+
+                $.ajax({
+                    url: '/accounting/account/update-status', // Your update route
+                    method: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'), // Include CSRF token
+                        id: itemId,
+                        status: status,
+                    },
+                    success: function (response) {
+                        alert(response.message); // Optional: Show a success message
+                    },
+                    error: function (error) {
+                        console.error(error);
+                        alert('An error occurred!'); // Optional: Show an error message
+                    }
+                });
+            });
             $('#account_no_gen').on('click', function () {
                 const inputEl = $(this).prev();
                 const random = (Math.random() + 1).toString(10).substring(7);

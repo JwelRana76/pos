@@ -48,7 +48,7 @@ class PurchaseService
             $purchase_data['supplier_id'] = $data['supplier'];
             $purchase_data['total_amount'] = $data['total_price'];
             $purchase_data['discount'] = $data['discount_amount'];
-            $purchase_data['previous_due'] = $data['previous_due'];
+            $purchase_data['previous_due'] = $data['previous_due'] ?? 0;
             $purchase_data['shipping_cost'] = $data['shipping_cost'];
             $purchase_data['grand_total'] = $data['grand_total'];
             $purchase_data['user_id'] = Auth::user()->id;

@@ -27,11 +27,13 @@ class Customer extends Model
     }
     public function getDueAttribute()
     {
-        // $sale = Sale::where('customer_id', $this->id)->sum('grand_total');
-        // $payment = SalePayment::where('customer_id', $this->id)->sum('amount');
-        // $return = SaleReturn::where('customer_id', $this->id)->sum('grand_total');
-        // $opening_due = Customer::find($this->id)->opening_due ?? 0;
-        // return $sale - $payment + $opening_due - $return;
-        return 0;
+        $sale = Sale::where('customer_id', $this->id)->sum('grand_total');
+        $payment = SalePayment::where('customer_id', $this->id)->sum('amount');
+        $opening_due = $this->opening_due;
+        return $sale - $payment + $opening_due;
+    }
+    function getOpeningBalanceAttribute()
+    {
+        return $this->opening_due - $this->opening_due_paid;
     }
 }

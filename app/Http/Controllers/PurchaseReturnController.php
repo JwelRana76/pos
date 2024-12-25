@@ -17,6 +17,9 @@ class PurchaseReturnController extends Controller
     }
     public function index(Request $request)
     {
+        if (!userHasPermission('return-index')) {
+            return view('404');
+        }
         $sales = PurchaseReturn::query()->orderBy('purchase_returns.id', 'desc');
 
         if ($request->ajax()) {
@@ -47,11 +50,17 @@ class PurchaseReturnController extends Controller
     }
     public function create()
     {
+        if (!userHasPermission('return-store')) {
+            return view('404');
+        }
         $suppliers = Supplier::get();
         return view('pages.purchase-return.create', compact('suppliers'));
     }
     public function store(Request $request)
     {
+        if (!userHasPermission('return-store')) {
+            return view('404');
+        }
         $request->validate([
             'supplier' => 'required',
         ]);
@@ -61,12 +70,18 @@ class PurchaseReturnController extends Controller
     }
     function edit($id)
     {
+        if (!userHasPermission('return-update')) {
+            return view('404');
+        }
         $purchase_return = PurchaseReturn::findOrFail($id);
         $suppliers = Supplier::get();
         return view('pages.purchase-return.edit', compact('suppliers', 'purchase_return'));
     }
     public function update(Request $request, $id)
     {
+        if (!userHasPermission('return-update')) {
+            return view('404');
+        }
         $request->validate([
             'supplier' => 'required',
             'voucher_no' => 'required',
@@ -77,6 +92,9 @@ class PurchaseReturnController extends Controller
     }
     function delete($id)
     {
+        if (!userHasPermission('return-delete')) {
+            return view('404');
+        }
         PurchaseReturn::findOrFail($id)->delete();
         return redirect()->route('purchase.return.index')->with('success', 'Purchase Return Deleted Successfully');
     }

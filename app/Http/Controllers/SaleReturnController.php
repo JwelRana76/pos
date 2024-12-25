@@ -17,6 +17,9 @@ class SaleReturnController extends Controller
     }
     public function index(Request $request)
     {
+        if (!userHasPermission('return-index')) {
+            return view('404');
+        }
         $sale_returns = SaleReturn::query()->orderBy('sale_returns.id', 'desc');
 
         if ($request->ajax()) {
@@ -38,11 +41,17 @@ class SaleReturnController extends Controller
     }
     public function create()
     {
+        if (!userHasPermission('return-store')) {
+            return view('404');
+        }
         $customers = Customer::get();
         return view('pages.sale-return.create', compact('customers'));
     }
     public function store(Request $request)
     {
+        if (!userHasPermission('return-store')) {
+            return view('404');
+        }
         $request->validate([
             'customer' => 'required',
         ]);
@@ -52,12 +61,18 @@ class SaleReturnController extends Controller
     }
     function edit($id)
     {
+        if (!userHasPermission('return-update')) {
+            return view('404');
+        }
         $sale_return = SaleReturn::findOrFail($id);
         $customers = Customer::get();
         return view('pages.sale-return.edit', compact('customers', 'sale_return'));
     }
     public function update(Request $request, $id)
     {
+        if (!userHasPermission('return-update')) {
+            return view('404');
+        }
         $request->validate([
             'customer' => 'required',
             'voucher_no' => 'required',
@@ -68,6 +83,9 @@ class SaleReturnController extends Controller
     }
     function delete($id)
     {
+        if (!userHasPermission('return-delete')) {
+            return view('404');
+        }
         SaleReturn::findOrFail($id)->delete();
         return redirect()->route('sale.return.index')->with('success', 'Sale Return Deleted Successfully');
     }

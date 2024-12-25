@@ -41,6 +41,7 @@
                         </select>
                       </td>
                       <td><input style="width:100px" type="number" min="1" name="qty[]" value="{{ $item->qty }}" id="quantity"></td>
+                      <td><button type="button" class="btn-danger" id="remove">X</button></td>
                     </tr>
                 @endforeach
               </tbody>

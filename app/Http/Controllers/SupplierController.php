@@ -18,6 +18,9 @@ class SupplierController extends Controller
     }
     public function index()
     {
+        if (!userHasPermission('supplier-index')) {
+            return view('404');
+        }
         $item = $this->baseService->Index();
         $columns = Supplier::$columns;
         if (request()->ajax()) {
@@ -27,6 +30,9 @@ class SupplierController extends Controller
     }
     public function trash()
     {
+        if (!userHasPermission('supplier-advance')) {
+            return view('404');
+        }
         $item = $this->baseService->Trash();
         $columns = Supplier::$columns;
         if (request()->ajax()) {
@@ -36,12 +42,18 @@ class SupplierController extends Controller
     }
     public function create()
     {
+        if (!userHasPermission('supplier-store')) {
+            return view('404');
+        }
         $districts = District::get();
         $divisions = Division::get();
         return view('pages.supplier.create', compact('districts', 'divisions'));
     }
     public function store(Request $request)
     {
+        if (!userHasPermission('supplier-store')) {
+            return view('404');
+        }
         $request->validate([
             'name' => 'required',
             'contact' => 'required',
@@ -51,8 +63,26 @@ class SupplierController extends Controller
         $message = $this->baseService->create($data);
         return redirect()->route('supplier.index')->with($message);
     }
+    public function supplierstore(Request $request)
+    {
+        if (!userHasPermission('supplier-store')) {
+            return view('404');
+        }
+        $request->validate([
+            'name' => 'required',
+            'contact' => 'required',
+            'district' => 'required',
+        ]);
+        $data = $request->all();
+        $message = $this->baseService->create($data);
+        $suppliers = Supplier::get();
+        return $suppliers;
+    }
     function edit($id)
     {
+        if (!userHasPermission('supplier-update')) {
+            return view('404');
+        }
         $supplier = Supplier::findOrFail($id);
         $districts = District::get();
         $divisions = Division::get();
@@ -60,6 +90,9 @@ class SupplierController extends Controller
     }
     public function update(Request $request, $id)
     {
+        if (!userHasPermission('supplier-update')) {
+            return view('404');
+        }
         $request->validate([
             'name' => 'required',
             'contact' => 'required',
@@ -71,6 +104,9 @@ class SupplierController extends Controller
     }
     function delete($id)
     {
+        if (!userHasPermission('supplier-delete')) {
+            return view('404');
+        }
         Supplier::findOrFail($id)->delete();
         return redirect()->route('supplier.index')->with('success', 'Supplier Deleted Successfully');
     }
@@ -81,12 +117,18 @@ class SupplierController extends Controller
     }
     function pdelete($id)
     {
+        if (!userHasPermission('supplier-advance')) {
+            return view('404');
+        }
         Supplier::withTrashed()->findOrFail($id)->forceDelete();
         return redirect()->route('supplier.index')->with('success', 'Supplier Permanently Deleted Successfully');
     }
 
     function Import(Request $request)
     {
+        if (!userHasPermission('supplier-advance')) {
+            return view('404');
+        }
         $request->validate([
             'supplier_file' => 'required|file|mimes:csv,txt',
         ]);

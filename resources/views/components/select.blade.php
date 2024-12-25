@@ -17,7 +17,7 @@
         @foreach ($options as $option)
             <option
                 @php
-$selected = $attributes['selectedId'] == (is_array($option) ? $option['id'] : $option->id);
+                $selected = $attributes['selectedId'] == (is_array($option) ? $option['id'] : $option->id);
                     
                     if(!is_array($option) && $option->is_default) {
                         $selected = true;

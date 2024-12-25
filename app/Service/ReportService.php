@@ -4,14 +4,17 @@ namespace App\Service;
 
 use App\Models\Expense;
 use App\Models\Income;
+use App\Models\Invest;
 use App\Models\Product;
 use App\Models\ProductAdjustment;
 use App\Models\Purchase;
 use App\Models\PurchasePayment;
 use App\Models\PurchaseReturn;
+use App\Models\SalaryPayment;
 use App\Models\Sale;
 use App\Models\SalePayment;
 use App\Models\SaleReturn;
+use DateTime;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -204,7 +207,7 @@ class ReportService
             })
             ->make(true);
     }
-    public function saleReport($data)
+    public function dateWiseSaleReport($data)
     {
         $start_date = $data['start_date'] ?? date('Y-m-d');
         $end_date = $data['end_date'] ?? date('Y-m-d');
@@ -238,7 +241,7 @@ class ReportService
             })
             ->make(true);
     }
-    public function purchaseReport($data)
+    public function dateWisePurchaseReport($data)
     {
         $start_date = $data['start_date'] ?? date('Y-m-d');
         $end_date = $data['end_date'] ?? date('Y-m-d');
@@ -311,6 +314,397 @@ class ReportService
             })
             ->addColumn('amount', function ($item) {
                 return $item->amount ?? null;
+            })
+            ->make(true);
+    }
+    public function saleReport($data)
+    {
+        $start_date = $data['start_date'] ?? date('Y-m-d');
+        $end_date = $data['end_date'] ?? date('Y-m-d');
+
+
+        $sales = Sale::where('created_at', '>=', $start_date)->where('created_at', '<=', $end_date)
+            ->select('voucher_no', 'id', 'created_at', 'grand_total')->orderBy('created_at', 'asc')->get();
+
+        return DataTables::of($sales)
+            ->addColumn('date', function ($item) {
+                return $item->created_at->format('d-M-Y');
+            })
+            ->addColumn('invoice_no', function ($item) {
+                return $item->voucher_no;
+            })
+            ->addColumn('amount', function ($item) {
+                return $item->grand_total;
+            })
+            ->addColumn('paid', function ($item) {
+                $paid = SalePayment::where('sale_id', $item->id)->sum('amount');
+                return $paid;
+            })
+            ->addColumn('due', function ($item) {
+                $paid = SalePayment::where('sale_id', $item->id)->sum('amount');
+                return $item->grand_total - $paid;
+            })
+            ->make(true);
+    }
+    public function purchaseReport($data)
+    {
+        $start_date = $data['start_date'] ?? date('Y-m-d');
+        $end_date = $data['end_date'] ?? date('Y-m-d');
+
+
+        $sales = Purchase::where('created_at', '>=', $start_date)->where('created_at', '<=', $end_date)
+            ->select('voucher_no', 'id', 'created_at', 'grand_total')->orderBy('created_at', 'asc')->get();
+
+        return DataTables::of($sales)
+            ->addColumn('date', function ($item) {
+                return $item->created_at->format('d-M-Y');
+            })
+            ->addColumn('invoice_no', function ($item) {
+                return $item->voucher_no;
+            })
+            ->addColumn('amount', function ($item) {
+                return $item->grand_total;
+            })
+            ->addColumn('paid', function ($item) {
+                $paid = PurchasePayment::where('purchase_id', $item->id)->sum('amount');
+                return $paid;
+            })
+            ->addColumn('due', function ($item) {
+                $paid = PurchasePayment::where('purchase_id', $item->id)->sum('amount');
+                return $item->grand_total - $paid;
+            })
+            ->make(true);
+    }
+    function customerLedgerReport($data)
+    {
+        $start_date = new DateTime($data['start_date'] ?? date('Y-m-d')); // Convert to DateTime
+        $end_date = new DateTime($data['end_date'] ?? date('Y-m-d'));     // Convert to DateTime
+
+        $ledger = [];
+        $balance = 0;
+        $backup_date = clone $start_date;
+        $back_date = $backup_date->modify('-1 day');
+
+        $sale = Sale::whereDate('created_at', '<', $start_date)
+            ->when(isset($data['customer_id']), function ($query) use ($data) {
+                $query->where('customer_id', $data['customer_id']);
+            })
+            ->sum('grand_total');
+
+        $paid = SalePayment::whereDate('created_at', '<', $start_date)
+            ->when(isset($data['customer_id']), function ($query) use ($data) {
+                $query->where('customer_id', $data['customer_id']);
+            })
+            ->sum('amount');
+
+        $balance += ($sale - $paid);
+
+        // Push data into the array
+        $ledger[] = [
+            'date' => $back_date->format('d-M-Y'),
+            'sale' => $sale,
+            'paid' => $paid,
+            'balance' => $balance,
+        ];
+        for ($date = $start_date; $date <= $end_date; $date->modify('+1 day')) {
+            $sale = Sale::whereDate('created_at', $date)
+                ->when(isset($data['customer_id']), function ($query) use ($data) {
+                    $query->where('customer_id', $data['customer_id']);
+                })
+                ->sum('grand_total');
+
+            $paid = SalePayment::whereDate('created_at', $date)
+                ->when(isset($data['customer_id']), function ($query) use ($data) {
+                    $query->where('customer_id', $data['customer_id']);
+                })
+                ->sum('amount');
+
+            if ($sale > 0 || $paid > 0) {
+                $balance += ($sale - $paid);
+
+                // Push data into the array
+                $ledger[] = [
+                    'date' => $date->format('d-M-Y'),
+                    'sale' => $sale,
+                    'paid' => $paid,
+                    'balance' => $balance,
+                ];
+            }
+        }
+
+        return DataTables::of($ledger)
+            ->addColumn('date', function ($item) {
+                return $item['date'];
+            })
+            ->addColumn('sale', function ($item) {
+                return $item['sale'];
+            })
+            ->addColumn('paid', function ($item) {
+                return $item['paid'];
+            })
+            ->addColumn('balance', function ($item) {
+                return $item['balance'];
+            })
+            ->make(true);
+    }
+    function supplierLedgerReport($data)
+    {
+        $start_date = new DateTime($data['start_date'] ?? date('Y-m-d')); // Convert to DateTime
+        $end_date = new DateTime($data['end_date'] ?? date('Y-m-d'));     // Convert to DateTime
+
+        $ledger = [];
+        $balance = 0;
+        $backup_date = clone $start_date;
+        $back_date = $backup_date->modify('-1 day');
+        $purchase = Purchase::whereDate('created_at', '<', $start_date)
+            ->when(isset($data['supplier_id']), function ($query) use ($data) {
+                $query->where('supplier_id', $data['supplier_id']);
+            })
+            ->sum('grand_total');
+
+        $paid = PurchasePayment::whereDate('created_at', '<', $start_date)
+            ->when(isset($data['supplier_id']), function ($query) use ($data) {
+                $query->where('supplier_id', $data['supplier_id']);
+            })
+            ->sum('amount');
+
+        $balance += ($purchase - $paid);
+        $ledger[] = [
+            'date' => $back_date->format('d-M-Y'),
+            'purchase' => $purchase,
+            'paid' => $paid,
+            'balance' => $balance,
+        ];
+        for ($date = $start_date; $date <= $end_date; $date->modify('+1 day')) {
+            $purchase = Purchase::whereDate('created_at', $date)
+                ->when(isset($data['supplier_id']), function ($query) use ($data) {
+                    $query->where('supplier_id', $data['supplier_id']);
+                })
+                ->sum('grand_total');
+            $paid = PurchasePayment::whereDate('created_at', $date)
+                ->when(isset($data['supplier_id']), function ($query) use ($data) {
+                    $query->where('supplier_id', $data['supplier_id']);
+                })
+                ->sum('amount');
+
+            if ($purchase > 0 || $paid > 0) {
+                $balance += ($purchase - $paid);
+
+                // Push data into the array
+                $ledger[] = [
+                    'date' => $date->format('d-M-Y'),
+                    'purchase' => $purchase,
+                    'paid' => $paid,
+                    'balance' => $balance,
+                ];
+            }
+        }
+
+        return DataTables::of($ledger)
+            ->addColumn('date', function ($item) {
+                return $item['date'];
+            })
+            ->addColumn('purchase', function ($item) {
+                return $item['purchase'];
+            })
+            ->addColumn('paid', function ($item) {
+                return $item['paid'];
+            })
+            ->addColumn('balance', function ($item) {
+                return $item['balance'];
+            })
+            ->make(true);
+    }
+    function bank($data)
+    {
+        $start_date = new DateTime($data['start_date'] ?? date('Y-m-d')); // Convert to DateTime
+        $end_date = new DateTime($data['end_date'] ?? date('Y-m-d'));     // Convert to DateTime
+
+        $ledger = [];
+        $balance = 0;
+        $backup_date = clone $start_date;
+        $back_date = $backup_date->modify('-1 day');
+        $purchase_payment = PurchasePayment::whereDate('created_at', '<', $start_date)
+            ->where('account_id', null)
+            ->when(isset($data['bank']), function ($query) use ($data) {
+                $query->where('bank_id', $data['bank']);
+            })
+            ->sum('amount');
+
+        $sale_payment = SalePayment::whereDate('created_at', '<', $start_date)
+            ->where('account_id', null)
+            ->when(isset($data['bank']), function ($query) use ($data) {
+                $query->where('bank_id', $data['bank']);
+            })
+            ->sum('amount');
+        $invest = Invest::whereDate('created_at', '<', $start_date)
+            ->where('account_id', null)
+            ->when(isset($data['bank']), function ($query) use ($data) {
+                $query->where('bank_id', $data['bank']);
+            })
+            ->sum('amount');
+        $salary_paid = SalaryPayment::whereDate('created_at', '<', $start_date)
+            ->where('account_id', null)
+            ->when(isset($data['bank']), function ($query) use ($data) {
+                $query->where('bank_id', $data['bank']);
+            })
+            ->sum('amount');
+        $credit = $invest + $sale_payment;
+        $debit = $purchase_payment + $salary_paid;
+        $balance += ($credit - $debit);
+        $ledger[] = [
+            'date' => $back_date->format('d-M-Y'),
+            'credit' => $credit,
+            'debit' => $debit,
+            'balance' => $balance,
+        ];
+        for ($date = $start_date; $date <= $end_date; $date->modify('+1 day')) {
+            $purchase_payment = PurchasePayment::whereDate('created_at', $date)
+                ->where('account_id', null)
+                ->when(isset($data['bank']), function ($query) use ($data) {
+                    $query->where('bank_id', $data['bank']);
+                })
+                ->sum('amount');
+            $sale_payment = SalePayment::whereDate('created_at', $date)
+                ->where('account_id', null)
+                ->when(isset($data['bank']), function ($query) use ($data) {
+                    $query->where('bank_id', $data['bank']);
+                })
+                ->sum('amount');
+            $invest = Invest::whereDate('created_at', $date)
+                ->where('account_id', null)
+                ->when(isset($data['bank']), function ($query) use ($data) {
+                    $query->where('bank_id', $data['bank']);
+                })
+                ->sum('amount');
+            $salary_paid = SalaryPayment::whereDate('created_at', $date)
+                ->where('account_id', null)
+                ->when(isset($data['bank']), function ($query) use ($data) {
+                    $query->where('bank_id', $data['bank']);
+                })
+                ->sum('amount');
+            $credit = $invest + $sale_payment;
+            $debit = $purchase_payment + $salary_paid;
+            $balance += ($credit - $debit);
+            if ($credit > 0 || $debit > 0) {
+                $ledger[] = [
+                    'date' => $date->format('d-M-Y'),
+                    'credit' => $credit,
+                    'debit' => $debit,
+                    'balance' => $balance,
+                ];
+            }
+        }
+
+        return DataTables::of($ledger)
+            ->addColumn('date', function ($item) {
+                return $item['date'];
+            })
+            ->addColumn('credit', function ($item) {
+                return $item['credit'];
+            })
+            ->addColumn('debit', function ($item) {
+                return $item['debit'];
+            })
+            ->addColumn('balance', function ($item) {
+                return $item['balance'];
+            })
+            ->make(true);
+    }
+    function account($data)
+    {
+        $start_date = new DateTime($data['start_date'] ?? date('Y-m-d')); // Convert to DateTime
+        $end_date = new DateTime($data['end_date'] ?? date('Y-m-d'));     // Convert to DateTime
+
+        $ledger = [];
+        $balance = 0;
+        $backup_date = clone $start_date;
+        $back_date = $backup_date->modify('-1 day');
+        $purchase_payment = PurchasePayment::whereDate('created_at', '<', $start_date)
+            ->where('bank_id', null)
+            ->when(isset($data['account']), function ($query) use ($data) {
+                $query->where('account_id', $data['account']);
+            })
+            ->sum('amount');
+
+        $sale_payment = SalePayment::whereDate('created_at', '<', $start_date)
+            ->where('bank_id', null)
+            ->when(isset($data['account']), function ($query) use ($data) {
+                $query->where('account_id', $data['account']);
+            })
+            ->sum('amount');
+        $invest = Invest::whereDate('created_at', '<', $start_date)
+            ->where('bank_id', null)
+            ->when(isset($data['account']), function ($query) use ($data) {
+                $query->where('account_id', $data['account']);
+            })
+            ->sum('amount');
+        $salary_paid = SalaryPayment::whereDate('created_at', '<', $start_date)
+            ->where('bank_id', null)
+            ->when(isset($data['account']), function ($query) use ($data) {
+                $query->where('account_id', $data['account']);
+            })
+            ->sum('amount');
+        // dd($invest);
+        $credit = $invest + $sale_payment;
+        $debit = $purchase_payment + $salary_paid;
+        $balance += ($credit - $debit);
+        $ledger[] = [
+            'date' => $back_date->format('d-M-Y'),
+            'credit' => $credit,
+            'debit' => $debit,
+            'balance' => $balance,
+        ];
+        for ($date = $start_date; $date <= $end_date; $date->modify('+1 day')) {
+            $purchase_payment = PurchasePayment::whereDate('created_at', $date)
+                ->where('bank_id', null)
+                ->when(isset($data['account']), function ($query) use ($data) {
+                    $query->where('account_id', $data['account']);
+                })
+                ->sum('amount');
+            $sale_payment = SalePayment::whereDate('created_at', $date)
+                ->where('bank_id', null)
+                ->when(isset($data['account']), function ($query) use ($data) {
+                    $query->where('account_id', $data['account']);
+                })
+                ->sum('amount');
+            $invest = Invest::whereDate('created_at', $date)
+                ->where('bank_id', null)
+                ->when(isset($data['account']), function ($query) use ($data) {
+                    $query->where('account_id', $data['account']);
+                })
+                ->sum('amount');
+            $salary_paid = SalaryPayment::whereDate('created_at', $date)
+                ->where('bank_id', null)
+                ->when(isset($data['account']), function ($query) use ($data) {
+                    $query->where('account_id', $data['account']);
+                })
+                ->sum('amount');
+            $credit = $invest + $sale_payment;
+            $debit = $purchase_payment + $salary_paid;
+            $balance += ($credit - $debit);
+            if ($credit > 0 || $debit > 0) {
+                $ledger[] = [
+                    'date' => $date->format('d-M-Y'),
+                    'credit' => $credit,
+                    'debit' => $debit,
+                    'balance' => $balance,
+                ];
+            }
+        }
+
+        return DataTables::of($ledger)
+            ->addColumn('date', function ($item) {
+                return $item['date'];
+            })
+            ->addColumn('credit', function ($item) {
+                return $item['credit'];
+            })
+            ->addColumn('debit', function ($item) {
+                return $item['debit'];
+            })
+            ->addColumn('balance', function ($item) {
+                return $item['balance'];
             })
             ->make(true);
     }

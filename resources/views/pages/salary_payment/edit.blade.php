@@ -1,138 +1,103 @@
-<x-admin title="Salary Submition">
-    <x-page-header head="Salary Submition" />
-    <div class="card p-3">
-      <x-form method="post" action="{{ route('salary-submit.update',$salary->id) }}">
-      <div class="row">
-        <div class="col-md-6">
-          <x-input id="date" type="month" value="{{ $salary->month }}" required/>
-        </div>
-        <div class="col-md-6">
-          <x-select id="employees" selectedId="{{ $salary->employee->id }}" :options="$employees"/>
-        </div>
-        <div class="col-md-12">
-          <hr>
-        </div>
-        @php
-            $particulars = App\Models\SalaryParticular::active();
-          @endphp
-          <table class="table mt-3" >
-            <thead>
-                <tr>
-                    <th>SL</th>
-                    <th>Particular Name</th>
-                    <th>Amount</th>
-                </tr>
-            </thead>
-            <tbody id="salary-product-table">
-                @foreach ($particulars as $key=>$item)
-                @php
-                  $amount = 0;
-                  $crop = 0;
-                    foreach ($salary->details as $value) {
-                      if($value->salary_particular_id == $item->id){
-                        $amount = $value->amount;
-                      }
-                      if($value->salary_particular_id == 0){
-                        $crop = $value->amount;
-                      }
-                    }
-                @endphp
-                    <tr>
-                        <td>{{ ++$key }}</td>
-                        <td>{{ $item->name }}</td>
-                        <td><input value="{{ $amount }}" {{ $item->is_constant == true ? 'readonly':'' }} type="text" class="form-control amount" name="amount[{{ $item->id }}]"></td>
-                    </tr>
-                @endforeach
-                <tr>
-                  <td>{{ ++$key }}</td>
-                  <td>Salary Crop</td>
-                  <input type="hidden" id="provident_fund" value="{{ $salary->provident_fund }}" name="provident_fund">
-                  <input type="hidden" id="total_pryable" value="{{ $salary->total_payable }}" name="total_pryable">
-                  <td><input type="text" value="{{ $crop }}" class="form-control crop" name="amount[crop]"></td>
-                </tr>
-                <tr>
-                  <td>{{ ++$key }}</td>
-                  <td>Note</td>
-                  <td><textarea row="3" cols="10" class="form-control note" name="note">{{ $salary->note }}</textarea></td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <th colspan="2" class="text-right">Total</th>
-                    <th id="total_salary"></th>
-                </tr>
-                <tr>
-                    <th colspan="2" class="text-right">Provident Fund</th>
-                    <th id="prodvident_fund">{{ $salary->provident_fund }}</th>
-                </tr>
-                <tr>
-                    <th colspan="2" class="text-right">Salary Crop</th>
-                    <th id="salary_crop"></th>
-                </tr>
-                <tr>
-                    <th colspan="2" class="text-right">Total Payable</th>
-                    <th id="total_payable"></th>
-                </tr>
-            </tfoot>
-          </table>
-        <div class="col-md-12">
-          <x-button value="Save" />
-        </div>
-        
+<x-admin title="Salary Payment">
+  <x-page-header head="Salary Payment" />
+  <div class="card p-3">
+    <x-form method="post" id="salary_payment" action="{{ route('salary-payment.update',$salary->id) }}">
+    <div class="row">
+      <div class="col-md-6">
+        <x-input id="date" type="date" value="{{ $salary->created_at->format('Y-m-d') }}" max="{{ date('Y-m-d') }}" required/>
       </div>
-      </x-form>
+      <div class="col-md-6">
+        <x-input id="month" type="month" value="{{ $salary->month->month }}" max="{{ date('Y-m', strtotime('-1 month')) }}" required/>
+      </div>
+      <div class="col-md-6">
+        <x-select id="employees" selectedId="{{ $salary->employee_id }}" required :options="$employees"/>
+      </div>
+      <div class="col-md-6">
+        <label for="payment_type">Payment Type *</label>
+        <select name="payment_type" id="payment_type" required class="form-control selectpicker" live-data-serach="true" title="select payment type">
+          <option value="0" {{ $salary->payment_type == 0?'selected':'' }}>Bank</option>
+          <option value="1" {{ $salary->payment_type == 1?'selected':'' }}>Cash</option>
+        </select>
+      </div>
+      <div class="col-md-6 d-none" id="account_section">
+        <x-select id="account" selectedId="{{ count($accounts) == 1 ? $accounts[0]->id:'' }}"
+        :options="$accounts" />
+      </div>
+      <div class="col-md-6 d-none" id="bank_section">
+        <x-select id="bank" selectedId="{{ count($banks) == 1 ? $banks[0]->id:'' }}" :options="$banks" />
+      </div>
+      <div class="col-md-6">
+        <x-input id="monthly_salary" value="{{ $salary->month->total_salary }}" readonly />
+        <x-input id="monthly_salary_id" value="{{ $salary->monthly_salary_id }}" type="hidden" />
+      </div>
+      <div class="col-md-6">
+        <x-input id="advance_paid" value="{{ $salary->advance }}" readonly />
+      </div>
+      <div class="col-md-6">
+        <x-input id="due_salary" value="{{ $salary->due_salary }}" readonly />
+      </div>
+      <div class="col-md-6">
+        <x-input id="total_salary" value="{{ $salary->total_salary }}" readonly />
+      </div>
+      <div class="col-md-6">
+        <x-input id="paid" value="{{ $salary->amount }}" required />
+      </div>
+      <div class="col-md-12" id="submit">
+        <x-button value="Save" />
+      </div>
+      
     </div>
+    </x-form>
+  </div>
 
 
 @push('js')
   <script>
       $(document).ready(function () {
-        total_calculation();
-      });
-      function total_calculation(){
-        var total_salary = 0;
-        $('#salary-product-table tr').each(function() {
-            var row = $(this);
-            var subtotal = parseFloat(row.find('.amount').val() || 0);
-            total_salary += subtotal;
+        $('#payment_type').change(function () { 
+          var type = $(this).val();
+          if(type == 0){
+            $('#account_section').addClass('d-none');
+            $('#bank_section').removeClass('d-none');
+          }else{
+            $('#bank_section').addClass('d-none');
+            $('#account_section').removeClass('d-none');
+          }
         });
-        var crop = parseFloat($('input[name="amount[crop]"]').val()) || 0;
-        total_salary -= crop;
-        $('#total_salary').text(total_salary.toFixed(2));
-        $('#salary_crop').text(crop.toFixed(2));
-        var provident_fund = parseFloat($('#provident_fund').val()) || 0;
-        var total_payable = total_salary - provident_fund;
-        $('#total_payable').text(total_payable.toFixed(2));
-        $('#total_pryable').val(total_payable);
-      }
-      $('.amount').on('input', function () {
-          total_calculation();
-      });
-      $('.crop').on('input', function () {
-          total_calculation();
-      });
-      $('#employees').on('change', function () {
-        salarydetails($(this).val());
-      });
-      function salarydetails(employee_id) {
-        $.get("/payrole/salary-assign/details/" + employee_id, function (data) {
-            if (data && data.length > 0) {
-                $('input[name^="amount["]').val('');
-                $.each(data, function (index, value) {
-                    $('input[name="amount[' + value.salary_particular_id + ']"]').val(value.amount);
-                    if(value.is_provident == true){
-                      $('#prodvident_fund').text(value.amount.toFixed(2));
-                      $('#provident_fund').val(value.amount);
-                    }
-                });
-              total_calculation();
-            } else {
-                // Clear all input fields if no data is found
-                $('input[name^="amount["]').val('');
-              total_calculation();
+
+        function checkMonth(){
+          var month = $('#month').val();
+          var employee_id = $('select[name="employees"]').val();
+          $.get("/payrole/salary-payment/salary_details/" + month + '/' + employee_id, 
+            function(data) {
+              $('#monthly_salary_id').val(data.monthly_salary_id);
+              $('#monthly_salary').val(data.monthly_salary);
+              $('#advance_paid').val(data.advance_salary);
+              $('#due_salary').val(data.due);
+              calculation();
             }
+          );
+        }
+        $('#month').on('input', function () {
+          checkMonth();
         });
-      }
+        
+        $('#employees').on('change', function () {
+          checkMonth();
+        });
+        function calculation(){
+          var monthly_salary = parseFloat($('#monthly_salary').val());
+          var advance_paid = parseFloat($('#advance_paid').val());
+          $('#total_salary').val(monthly_salary - advance_paid);
+        }
+        $('#salary_payment #paid').on('input', function () {
+          var salary = parseFloat($('#total_salary').val());
+          if(parseFloat($(this).val()) > salary){
+            alert(`You can not pay more than ${salary}`);
+            $(this).val(salary);
+          }
+        });
+      });
   </script>
 @endpush
 </x-admin>

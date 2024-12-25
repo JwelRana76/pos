@@ -14,7 +14,9 @@ class InvestController extends Controller
     }
     public function index()
     {
-
+        if (!userHasPermission('invest-index')) {
+            return view('404');
+        }
         $item = $this->baseService->Index();
         $columns = Invest::$columns;
         if (request()->ajax()) {
@@ -24,7 +26,9 @@ class InvestController extends Controller
     }
     public function trash()
     {
-
+        if (!userHasPermission('invest-advance')) {
+            return view('404');
+        }
         $item = $this->baseService->Trash();
         $columns = Invest::$columns;
         if (request()->ajax()) {
@@ -35,6 +39,9 @@ class InvestController extends Controller
 
     public function store(Request $request)
     {
+        if (!userHasPermission('invest-store')) {
+            return view('404');
+        }
         if ($request->id == null) {
             $request->validate([
                 'amount' => 'required',
@@ -46,6 +53,9 @@ class InvestController extends Controller
     }
     function edit($id)
     {
+        if (!userHasPermission('invest-update')) {
+            return view('404');
+        }
         $invest = Invest::findOrFail($id);
         $item = $this->baseService->Index();
         $columns = Invest::$columns;
@@ -56,16 +66,25 @@ class InvestController extends Controller
     }
     function delete($id)
     {
+        if (!userHasPermission('invest-delete')) {
+            return view('404');
+        }
         Invest::findOrFail($id)->delete();
         return redirect()->route('invest.index')->with('success', 'Invest Deleted Successfully');
     }
     function restore($id)
     {
+        if (!userHasPermission('invest-advance')) {
+            return view('404');
+        }
         $invest = Invest::withTrashed()->findOrFail($id)->restore();
         return redirect()->route('invest.index')->with('success', 'Invest Restored Successfully');
     }
     function pdelete($id)
     {
+        if (!userHasPermission('invest-advance')) {
+            return view('404');
+        }
         Invest::withTrashed()->findOrFail($id)->forceDelete();
         return redirect()->route('invest.trash')->with('success', 'Invest Permanently Deleted Successfully');
     }

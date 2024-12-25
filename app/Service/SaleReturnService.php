@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Models\Account;
 use App\Models\Product;
 use App\Models\ProductSaleReturn;
 use App\Models\SaleReturn;
@@ -41,8 +42,9 @@ class SaleReturnService
     {
         DB::beginTransaction();
         try {
+            $account = Account::whereFirst('is_default', 1);
             $return_data['created_at'] = $data['date'];
-            $return_data['account_id'] = $data['account_id'] ?? 1;
+            $return_data['account_id'] = $data['account_id'] ?? $account->id;
             $return_data['voucher_no'] = $this->voucher_no();
             $return_data['customer_id'] = $data['customer'];
             $return_data['grand_total'] = $data['grand_total'];
@@ -70,9 +72,10 @@ class SaleReturnService
     {
         DB::beginTransaction();
         try {
+            $account = Account::whereFirst('is_default', 1);
             $sale_return = $this->model::findOrFail($id);
             $return_data['created_at'] = $data['date'];
-            $return_data['account_id'] = $data['account_id'] ?? 1;
+            $return_data['account_id'] = $data['account_id'] ?? $account->id;
             $return_data['customer_id'] = $data['customer'];
             $return_data['grand_total'] = $data['grand_total'];
             $return_data['qty'] = array_sum($data['qty']);

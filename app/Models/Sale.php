@@ -36,6 +36,10 @@ class Sale extends Model
         $paid = SalePayment::where('sale_id', $this->id)->sum('amount');
         return $paid;
     }
+    public function getDueAttribute()
+    {
+        return $this->grand_total - $this->paid;
+    }
     public function payments()
     {
         return $this->hasMany(SalePayment::class, 'sale_id', 'id');

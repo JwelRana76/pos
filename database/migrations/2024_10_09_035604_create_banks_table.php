@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('account_no');
             $table->string('bank_name');
             $table->string('branch');
+            $table->boolean('is_default')->default(false);
             $table->softDeletes();
             $table->timestamps();
         });

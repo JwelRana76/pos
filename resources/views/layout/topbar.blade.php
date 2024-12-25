@@ -4,20 +4,30 @@
     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
         <i class="fa fa-bars"></i>
     </button>
-
+    <style>
+        .top-border{
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+        .top-border:hover{
+            text-decoration: none;
+        }
+    </style>
     <!-- Topbar Search -->
-    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-        <div class="input-group">
-            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
-                aria-label="Search" aria-describedby="basic-addon2">
-            <div class="input-group-append">
-                <button class="btn btn-primary" type="button">
-                    <i class="fas fa-search fa-sm"></i>
-                </button>
-            </div>
-        </div>
-    </form>
-
+    <ul class="m-auto">
+        @if(userHasPermission('customer-advance'))
+        <a class="p-2 top-border mr-2" data-target="#customer_payment" data-toggle="modal"> <i class="fas fa-money-bill fa-fw mr-2 mr-2"></i>Customer Payment</a>
+        @endif
+        @if(userHasPermission('sale-store'))
+        <a href="{{ route('sale.create') }}" class="p-2 top-border mr-2"> <i class="fas fa-scale-unbalanced fa-fw mr-2"></i>Sale</a>
+        @endif
+        @if(userHasPermission('purchase-store'))
+        <a href="{{ route('purchase.create') }}" class="p-2 top-border mr-2"> <i class="fas fa-shopping-cart fa-fw mr-2"></i>Purchase</a>
+        @endif
+        @if(userHasPermission('supplier-advance'))
+        <a class="p-2 top-border mr-2" data-target="#supplier_payment" data-toggle="modal"> <i class="fas fa-money-bill fa-fw mr-2"></i>Supplier Payment</a>
+        @endif
+    </ul>
     <!-- Topbar Navbar -->
     <ul class="navbar-nav ml-auto">
 
@@ -193,6 +203,238 @@
             </div>
         </li>
 
+
     </ul>
+    @php
+        $customers = App\Models\Customer::get();
+        $suppliers = App\Models\Supplier::get();
+        $accounts = App\Models\Account::select('name as name', 'id', 'account_no')
+            ->get()
+            ->append('balance');
+        $banks = App\Models\Bank::select('bank_name as name', 'id', 'account_no')
+            ->get()
+            ->append('balance');
+    @endphp
+    <x-large-modal id="customer_payment">
+        <x-form method="post" action="{{ route('customer.payment') }}">
+            <div class="row">
+                <div class="col-md-6">
+                    <x-input id="date" value="{{ date('Y-m-d') }}" type="date" required/>
+                </div>
+                <div class="col-md-6">
+                    <x-select id="customer" :options="$customers" />
+                </div>
+                <div class="col-md-6">
+                    <x-select id="voucher" :options="[]" />
+                </div>
+                <div class="col-md-6">
+                    <x-input id="payable" readonly required/>
+                </div>
+                <div class="col-md-6">
+                    <x-input id="paid"  required/>
+                </div>
+                <div class="col-md-6">
+                    <x-input id="change" readonly required/>
+                </div>
+                <div class="col-md-6">
+                    <label for="payment_method">Payment Method</label>
+                    <select required name="payment_method" id="payment_method" class="form-control selectpicker" title="select payment method">
+                        <option value="0">Cash</option>
+                        <option value="1">Bank</option>
+                    </select>
+                </div>
+                <div class="col-md-6 d-none" id="account_part">
+                    <x-select id="account" selectedId="1" :options="accounts()" />
+                </div>
+                <div class="col-md-6 d-none" id="bank_part">
+                    <x-select id="bank" key="bank_name" :options="banks()" />
+                </div>
+                <div class="col-md-12">
+                    <x-text-area id='note' name="note" />
+                </div>
+                <x-button value="Save" />
+            </div>
+        </x-form>
+    </x-large-modal>
+    <x-large-modal id="supplier_payment">
+        <x-form method="post" action="{{ route('supplier.payment') }}">
+            <div class="row">
+                <div class="col-md-6">
+                    <x-input id="date" value="{{ date('Y-m-d') }}" type="date" required/>
+                </div>
+                <div class="col-md-6">
+                    <x-select id="supplier" :options="$suppliers" />
+                </div>
+                <div class="col-md-6">
+                    <x-select id="voucher" :options="[]" />
+                </div>
+                <div class="col-md-6">
+                    <x-input id="payable" readonly required/>
+                </div>
+                <div class="col-md-6">
+                    <x-input id="paid"  required/>
+                </div>
+                <div class="col-md-6">
+                    <x-input id="change" readonly required/>
+                </div>
+                <div class="col-md-6">
+                    <label for="payment_method">Payment Method</label>
+                    <select name="payment_method" required id="payment_method" class="form-control selectpicker" title="select payment method">
+                        <option value="0">Cash</option>
+                        <option value="1">Bank</option>
+                    </select>
+                </div>
+                <div class="col-md-6 d-none" id="account_part">
+                    <x-select id="account" selectedId="1" :options="accounts()" />
+                </div>
+                <div class="col-md-6 d-none" id="bank_part">
+                    <x-select id="bank" key="bank_name" :options="banks()" />
+                </div>
+                <div class="col-md-12">
+                    <x-text-area id='note' name="note" />
+                </div>
+                <x-button value="Save" />
+            </div>
+        </x-form>
+    </x-large-modal>
+    @push('js')
+        <script>
+        $(document).ready(function () {
+            $('#customer_payment #payment_method').on('change', function () {
+                if($(this).val() == 0){
+                    $('#customer_payment #account_part').removeClass('d-none');
+                    $('#customer_payment #bank_part').addClass('d-none');
+                    $('#customer_payment #account').attr('required', 'true');
+                    $('#customer_payment #bank').removeAttr('required');
+                } else {
+                    $('#customer_payment #bank_part').removeClass('d-none');
+                    $('#customer_payment #account_part').addClass('d-none');
+                    $('#customer_payment #account').removeAttr('required');
+                    $('#customer_payment #bank').attr('required', 'true');
+                }
+            });
+            $('#customer_payment #customer').change(function () { 
+                customerChange($(this).val());
+            });
+            function customerChange(customer){
+                $.get("/customer/sale/references/"+customer,
+                    function (data) {
+                        $('#customer_payment #payable').val(data.due.toFixed(2));
+                        if(data.sales){
+                            $('#customer_payment #voucher').empty();
+                            data.sales.forEach(function(category) {
+                                $('#customer_payment #voucher').append(
+                                    $('<option>', {
+                                        value: category.id,
+                                        text: category.voucher_no
+                                    })
+                                );
+                            });
+                            $('#customer_payment #voucher').selectpicker('refresh');
+                        }
+                    }
+                );
+            }
+            $('#customer_payment #voucher').change(function () { 
+                $.get("/customer/sale/due/"+$(this).val(),
+                    function (data) {
+                        $('#customer_payment #payable').val(parseFloat(data).toFixed(2));
+                    }
+                );
+            });
+            $('#customer_payment #paid').on('input',function () { 
+                var payable = parseFloat($('#customer_payment #payable').val());
+                var paid = parseFloat($(this).val());
+                if(paid > payable){
+                    alert(`You can not pay more than ${payable}`);
+                    $(this).val(payable);
+                    $('#customer_payment #change').val(0);
+                }else{
+                    $('#customer_payment #change').val(payable - paid);
+                }
+            });
+
+            // supplier payment js section
+            $('#supplier_payment #payment_method').on('change', function () {
+                if($(this).val() == 0){
+                    $('#supplier_payment #account_part').removeClass('d-none');
+                    $('#supplier_payment #bank_part').addClass('d-none');
+                    $('#supplier_payment #account').attr('required', 'true');
+                    $('#supplier_payment #bank').removeAttr('required');
+                } else {
+                    $('#supplier_payment #bank_part').removeClass('d-none');
+                    $('#supplier_payment #account_part').addClass('d-none');
+                    $('#supplier_payment #account').removeAttr('required');
+                    $('#supplier_payment #bank').attr('required', 'true');
+                }
+            });
+            $('#supplier_payment #supplier').change(function () { 
+                supplierChange($(this).val());
+            });
+            function supplierChange(supplier){
+                $.get("/supplier/purchase/references/"+supplier,
+                    function (data) {
+                        $('#supplier_payment #payable').val(data.due.toFixed(2));
+                        if(data.purchases){
+                            $('#supplier_payment #voucher').empty();
+                            data.purchases.forEach(function(category) {
+                                $('#supplier_payment #voucher').append(
+                                    $('<option>', {
+                                        value: category.id,
+                                        text: category.voucher_no
+                                    })
+                                );
+                            });
+                            $('#supplier_payment #voucher').selectpicker('refresh');
+                        }
+                    }
+                );
+            }
+            $('#supplier_payment #voucher').change(function () { 
+                $.get("/supplier/purchase/due/"+$(this).val(),
+                    function (data) {
+                        $('#supplier_payment #payable').val(parseFloat(data).toFixed(2));
+                    }
+                );
+            });
+            const accounts = @json($accounts);
+            const banks = @json($banks);
+            $('#supplier_payment #paid').on('input',function () { 
+                var payable = parseFloat($('#supplier_payment #payable').val());
+                var payment_method = $('#supplier_payment #payment_method').val();
+                var paid = parseFloat($(this).val());
+                if (payment_method) {
+                    var bank = $('#supplier_payment #bank').val();
+                    var account = $('#supplier_payment #account').val();
+                    if(payment_method == 0 && account){
+                        var filteredBank = accounts.find(item => item.id == account);
+                        var balance = parseFloat(filteredBank.balance);
+                        if(parseFloat($(this).val()) > balance){
+                            alert(`You Account Balance ${balance}`);
+                            $(this).val(balance);
+                        }
+                    }else{
+                        var filteredBank = banks.find(item => item.id == bank);
+                        var balance = parseFloat(filteredBank.balance);
+                        if(parseFloat($(this).val()) > balance){
+                            alert(`You Bank Balance ${balance}`);
+                            $(this).val(balance);
+                        }
+                    }
+                    if(paid > payable){
+                        alert(`You can not pay more than ${payable}`);
+                        $(this).val(payable);
+                        $('#supplier_payment #change').val(0);
+                    }else{
+                        $('#supplier_payment #change').val(payable - paid);
+                    }
+                }else{
+                    alert('Select Payment Method First');
+                    $(this).val(null);
+                }
+            });
+        });
+    </script>
+    @endpush
 
 </nav>

@@ -1,199 +1,278 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title id="title">Money Receipt</title>
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f2f2f2;
+        .container {
+            margin-top: 20px;
         }
-        .invoice-box {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            border-radius: 8px;
-            background-color: #ffffff;
-        }
-        .print-button {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        .print-button button {
-            padding: 10px 20px;
-            font-size: 16px;
-            color: #fff;
-            background-color: #333;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-        .header .logo {
-            width: 150px;
-        }
-        .header .company-details {
-            text-align: right;
-        }
-        .header .company-details h2 {
-            margin: 0;
-            font-size: 24px;
-            color: #333;
-        }
-        .header .company-details p {
-            margin: 5px 0;
-            color: #777;
-        }
-        .invoice-details {
-            padding: 20px;
-            border: 1px solid #f0f0f0;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-        }
-        .invoice-details h1 {
-            font-size: 28px;
-            margin: 0 0 10px;
-            color: #333;
-            border: 1px solid #ddd;
-            padding: 5px 10px;
-            background: white;
-            border-radius: 5px;
-            width: fit-content;
-            float: center;
+
+        .receipt{
+            width: 850px;
+            height: 450px;
+            border: 1px solid lightgray;
+            /* box-shadow: 5px 5px 5px 5px gray; */
             margin: auto;
-        }
-        .invoice-details p {
-            margin: 5px 0;
-            color: #555;
-        }
-        .invoice-details .customer-details {
-            margin-top: 10px;
-        }
-        .invoice-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        .invoice-table th, .invoice-table td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        .invoice-table th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-        }
-        .total-section {
-            margin-top: 20px;
-            text-align: right;
-        }
-        .total-section .total-amount {
-            font-size: 24px;
-            font-weight: bold;
-            color: #333;
-        }
-        table tfoot tr th{
-          padding: 5px !important;
-        }
-        .footer {
             margin-top: 30px;
-            text-align: center;
-            color: #777;
+            box-sizing: border-box;
         }
+
+        .receipt-body{
+            box-sizing: border-box;
+            width: 800px;
+            height: 300px;
+            /* border: 1px solid red; */
+            margin: auto;
+            margin-top: 20px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        p{
+            margin: 0;
+        }
+
+        .receipt-header {
+            width: 100%;
+            height: 120px;
+            /* border-bottom: 1px solid black; */
+        }
+        #div1 {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+            color: #fff;
+            width: 100%;
+            height: 100%;
+        }
+
+        #div1:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #018843;
+            -webkit-transform-origin: 100% 0;
+            -ms-transform-origin: 100% 0;
+            transform-origin: 100% 0;
+            -webkit-transform: skew(-40deg);
+            -ms-transform: skew(-40deg);
+            transform: skew(-40deg);
+            z-index: -1;
+        }
+
+        #div2 {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+            color: #140101;
+            width: 100%;
+            height: 100%;
+        }
+
+        #div2:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #018843;
+            -webkit-transform-origin: 100% 0;
+            -ms-transform-origin: 100% 0;
+            transform-origin: 100% 0;
+            -webkit-transform: skew(40deg);
+            -ms-transform: skew(40deg);
+            transform: skew(40deg);
+            z-index: -1;
+        }
+        table tr td{
+            padding: 5px !important;
+        }
+
         @media print {
-            .print-button {
+            body {
+                -webkit-print-color-adjust: exact;
+            }
+            #print_btn{
+                content: '';
                 display: none;
             }
-            table tfoot, table tfoot tr, table tfoot tr th{
-              border: none !important;
+            #printableArea2{
+                display:block;
+            }
+            #title{
+                display: none;
+            }
+
+            /* #d1 {
+                overflow: hidden;
+                float: left;
+            } */
+            #printableArea{
+                /* box-shadow: px 0px 5px gray; */
+            }
+            #div1 {
+                position: relative;
+                display: inline-block;
+                overflow: hidden;
+                color: #fff;
+                width: 100%;
+                height: 100%;
+            }
+
+            #div1:after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: #018843;
+                -webkit-transform-origin: 100% 0;
+                -ms-transform-origin: 100% 0;
+                transform-origin: 100% 0;
+                -webkit-transform: skew(-40deg);
+                -ms-transform: skew(-40deg);
+                transform: skew(-40deg);
+                z-index: -1;
+            }
+
+            #div2 {
+                position: relative;
+                display: inline-block;
+                overflow: hidden;
+                color: #fff;
+                width: 100%;
+                height: 100%;
+            }
+
+            #div2:after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: #018843;
+                -webkit-transform-origin: 100% 0;
+                -ms-transform-origin: 100% 0;
+                transform-origin: 100% 0;
+                -webkit-transform: skew(40deg);
+                -ms-transform: skew(40deg);
+                transform: skew(40deg);
+                z-index: -1;
             }
         }
     </style>
 </head>
+
 <body>
-    <div class="invoice-box">
-        <div class="print-button">
-            <button onclick="window.print()">Print</button>
-        </div>
-        <div class="header">
-            <img src="/upload/{{ setting()->logo }}" alt="Company Logo" class="logo">
-            <div class="company-details">
-                <h2>{{ setting()->name ?? null }}</h2>
-                <p>{{ setting()->address ?? null }}</p>
-                <p>Email: {{ setting()->email ?? null }} | Phone: {{ setting()->contact ?? null }}</p>
+    @php
+        $digit = new NumberFormatter('en', NumberFormatter::SPELLOUT);
+        $setting = DB::table('settings')->first();
+    @endphp
+    <div class="container">
+        <div class="row col-12">
+            <div class="col-lg-4 mx-auto text-center">
+                <a type="button" href="{{  url()->previous() }}" class="btn btn-info" id="print_btn" >Return Back</a>
+                <button type="button" class="btn btn-primary" id="print_btn" onclick="printDiv('printableArea')">Print Receipt</button>
             </div>
-        </div>
-        <div class="invoice-details">
-            <h1>Invoice</h1>
-            <p>Date: {{ $sale->created_at->format('d-M-Y') }}</p>
-            <div class="customer-details">
-                <p><strong>Bill To:</strong></p>
-                <p>{{ $sale->customer->name ?? null }}</p>
-                <p>{{ $sale->customer->address ?? null }}</p>
-                <p>{{ $sale->customer->district->name ?? null }}, Zip Code: {{ $sale->customer->district->code }}</p>
-                <p>Phone: {{ $sale->customer->contact ?? null }}</p>
-            </div>
-        </div>
-        <table class="invoice-table">
-            <thead>
-                <tr>
-                    <th>Description</th>
-                    <th>Quantity</th>
-                    <th>Unit Price</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody>
-              @foreach ($sale->product_sale as $product)
-              <tr>
-                  <td>{{ $product->product->name ?? null }}</td>
-                  <td>{{ $product->qty }}</td>
-                  <td>{{ $product->unit_price }}</td>
-                  <td>{{ $product->total_price }}</td>
-              </tr>
-              @endforeach
-            </tbody>
-            <tfoot>
-              <tr>
-                <th colspan="3" style="text-align: right">Total Amount :</th>
-                <th>{{ $sale->total_amount }}</th>
-              </tr>
-              <tr>
-                <th colspan="3" style="text-align: right">Discount :</th>
-                <th>{{ $sale->discount ?? 0 }}</th>
-              </tr>
-              <tr>
-                <th colspan="3" style="text-align: right">Grand Total :</th>
-                <th>{{ $sale->grand_total }}</th>
-              </tr>
-              <tr>
-                <th colspan="3" style="text-align: right">Paid :</th>
-                <th>{{ $sale->paid }}</th>
-              </tr>
-              <tr>
-                <th colspan="3" style="text-align: right">Due :</th>
-                <th>{{ $sale->grand_total - $sale->paid }}</th>
-              </tr>
-            </tfoot>
-        </table>
-        <div class="footer">
-            <p>Thank you for Shopping!</p>
         </div>
     </div>
+    <div class="receipt" id="printableArea">
+        <div class="receipt-header" >
+            <div id="d1" style="width: 40%;height:100%;float:left;">
+                <div class="div1" id="div1" style="padding-left: 14px;padding-top:10px">
+                    <h3 style="font-size:20px; text-decoration:underline">Customer Detail</h3>
+                    <p>{{ $sale->customer->name }}</p>
+                    <p>{{ $sale->customer->address }}</p>
+                    <p>{{ $sale->customer->contact }}</p>
+                </div>
+            </div>
+            <div style="width: 20%;height:100%;float:left;text-align: center;">
+                <h1 style="margin-top: 35px;color: #018843;font-size:30px;font-weight:700">Invoice <br>{{ $sale->voucher_no }}</h1>
+            </div>
+            <div style="width: 40%;height:100%;float:right;">
+                <div class="div2" id="div2" style="color: white;text-align: right;padding-right:14px">
+                    <h3 style="font-size:20px; text-decoration:underline">Company Details</h3>
+                    <p>{{ $setting->name }}</p>
+                    <p>{{ $setting->address }}</p>
+                    <p>{{ $setting->contact }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="receipt-body" style="padding: 5px;padding-right: 10px;">
+            <table class="table" style="font-size: 12px !important">
+                <thead>
+                    <tr>
+                        <td>SL</td>
+                        <td>Product</td>
+                        <td>Unit Price</td>
+                        <td>Quantity</td>
+                        <td>Total</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($sale->product_sale as $key=>$item)
+                        <tr>
+                            <td>{{ ++$key }}</td>
+                            <td>{{ $item->product->brand->name }} {{ $item->product->name }} {{ $item->product->size->name }} {{ $item->product->unit->name }}</td>
+                            <td>{{ $item->unit_price }}</td>
+                            <td>{{ $item->qty }}</td>
+                            <td>{{ $item->qty * $item->unit_price }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" style="text-align: right">Sub Total : </td>
+                        <td>{{ $sale->total_amount }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="text-align: right">Discount : </td>
+                        <td>{{ $sale->discount }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="text-align: right">Grand Total : </td>
+                        <td>{{ $sale->grand_total }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="text-align: right">Paid : </td>
+                        <td>{{ $sale->paid }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="text-align: right">Due : </td>
+                        <td>{{ $sale->grand_total - $sale->paid }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div style="text-align: center;padding-top:10px">
+            <p>Powered By : </p>
+            <a href="https://www.facebook.com/jwel.rana.1029" target="_blank">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://www.facebook.com/jwel.rana.1029&size=150x150" 
+                    alt="Facebook QR Code" style="width:50px; height:50px;">
+            </a>
+        </div>
+
+    </div>
+
     <script>
-      window.onafterprint = function() {
-        window.close();
-      };
+        // printDiv('x');
+        function printDiv(divId) {
+
+
+            window.print();
+
+        }
     </script>
 </body>
+
 </html>

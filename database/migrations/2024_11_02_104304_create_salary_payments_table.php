@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('employee_id')->constrained('employees')->onDelete('cascade');
             $table->foreignId('bank_id')->nullable()->constrained('banks')->onDelete('cascade');
             $table->foreignId('account_id')->nullable()->constrained('accounts')->onDelete('cascade');
+            $table->string('voucher_no');
             $table->double('due_salary');
             $table->double('advance');
             $table->double('total_salary');

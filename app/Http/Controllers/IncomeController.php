@@ -15,7 +15,9 @@ class IncomeController extends Controller
     }
     public function index()
     {
-
+        if (!userHasPermission('income-index')) {
+            return view('404');
+        }
         $item = $this->baseService->Index();
         $categories = IncomeCategory::get();
         $columns = Income::$columns;
@@ -26,6 +28,9 @@ class IncomeController extends Controller
     }
     public function trash()
     {
+        if (!userHasPermission('income-advance')) {
+            return view('404');
+        }
 
         $item = $this->baseService->Trash();
         $columns = Income::$columns;
@@ -37,6 +42,9 @@ class IncomeController extends Controller
 
     public function store(Request $request)
     {
+        if (!userHasPermission('income-store')) {
+            return view('404');
+        }
         if ($request->id == null) {
             $request->validate([
                 'amount' => 'required',
@@ -48,6 +56,9 @@ class IncomeController extends Controller
     }
     function edit($id)
     {
+        if (!userHasPermission('income-update')) {
+            return view('404');
+        }
         $income = Income::findOrFail($id);
         $item = $this->baseService->Index();
         $categories = IncomeCategory::get();
@@ -59,16 +70,25 @@ class IncomeController extends Controller
     }
     function delete($id)
     {
+        if (!userHasPermission('income-delete')) {
+            return view('404');
+        }
         Income::findOrFail($id)->delete();
         return redirect()->route('income.index')->with('success', 'Income Deleted Successfully');
     }
     function restore($id)
     {
+        if (!userHasPermission('income-advance')) {
+            return view('404');
+        }
         $income = Income::withTrashed()->findOrFail($id)->restore();
         return redirect()->route('income.index')->with('success', 'Income Restored Successfully');
     }
     function pdelete($id)
     {
+        if (!userHasPermission('income-advance')) {
+            return view('404');
+        }
         Income::withTrashed()->findOrFail($id)->forceDelete();
         return redirect()->route('income.trash')->with('success', 'Income Permanently Deleted Successfully');
     }

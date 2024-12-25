@@ -5,7 +5,7 @@
         <x-card header="User Update">
             <x-form method="post" action="{{ route('user.update',$data->id) }}">
                 <x-input id="name" value="{{ $data->name }}" />
-                <x-input id="username" value="{{ $data->username }}" />
+                <x-input id="email" value="{{ $data->email }}" />
                 <x-input type="password" id="password" />
                 <x-input type="password" id="conform_password" />
                 <x-select id="role_id" selectedId="{{ $data->role->role_id }}" :options="$roles" />

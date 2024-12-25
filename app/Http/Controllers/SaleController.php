@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\ProductSale;
 use App\Models\Sale;
+use App\Models\VoucherSetting;
 use App\Service\SaleService;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -17,6 +18,9 @@ class SaleController extends Controller
     }
     public function index(Request $request)
     {
+        if (!userHasPermission('sale-index')) {
+            return view('404');
+        }
 
         $sales = Sale::query()->orderBy('sales.id', 'desc');
         if ($request->ajax()) {
@@ -61,6 +65,9 @@ class SaleController extends Controller
     }
     public function trash(Request $request)
     {
+        if (!userHasPermission('sale-advance')) {
+            return view('404');
+        }
         $sales = Sale::onlyTrashed()->orderBy('sales.id', 'desc');
         if ($request->ajax()) {
             return DataTables::of($sales)
@@ -95,6 +102,9 @@ class SaleController extends Controller
     }
     public function create()
     {
+        if (!userHasPermission('sale-store')) {
+            return view('404');
+        }
         $customers = Customer::get();
         return view('pages.sale.create', compact('customers'));
     }
@@ -106,6 +116,9 @@ class SaleController extends Controller
     }
     public function store(Request $request)
     {
+        if (!userHasPermission('sale-store')) {
+            return view('404');
+        }
         $request->validate([
             'customer' => 'required',
         ]);
@@ -116,12 +129,18 @@ class SaleController extends Controller
     }
     function edit($id)
     {
+        if (!userHasPermission('sale-update')) {
+            return view('404');
+        }
         $sale = Sale::findOrFail($id);
         $customers = Customer::get();
         return view('pages.sale.edit', compact('customers', 'sale'));
     }
     public function update(Request $request, $id)
     {
+        if (!userHasPermission('sale-update')) {
+            return view('404');
+        }
         $request->validate([
             'customer' => 'required',
         ]);
@@ -131,26 +150,46 @@ class SaleController extends Controller
     }
     function delete($id)
     {
+        if (!userHasPermission('sale-delete')) {
+            return view('404');
+        }
         $this->baseService->delete($id);
         return redirect()->route('sale.index')->with('success', 'Sale Deleted Successfully');
     }
     function restore($id)
     {
+        if (!userHasPermission('sale-advance')) {
+            return view('404');
+        }
         Sale::onlyTrashed()->findOrFail($id)->restore();
         return redirect()->route('sale.index')->with('success', 'Sale Restored Successfully');
     }
     function pdelete($id)
     {
+        if (!userHasPermission('sale-advance')) {
+            return view('404');
+        }
         Sale::onlyTrashed()->findOrFail($id)->forceDelete();
         return redirect()->route('sale.trash')->with('success', 'Sale Permanently Deleted Successfully');
     }
     function invoice($id)
     {
+        if (!userHasPermission('sale-advance')) {
+            return view('404');
+        }
         $sale = Sale::findOrFail($id);
-        return view('pages.sale.invoice', compact('sale'));
+        $voucher = VoucherSetting::findOrFail(1);
+        if ($voucher->pos == true) {
+            return view('pages.sale.pos_invoice', compact('sale'));
+        } else {
+            return view('pages.sale.invoice', compact('sale'));
+        }
     }
     function show($id)
     {
+        if (!userHasPermission('sale-advance')) {
+            return view('404');
+        }
         $sale = Sale::with('customer')->where('id', $id)->first();
         $items = ProductSale::where('sale_id', $id)
             ->with(['product' => function ($query) {

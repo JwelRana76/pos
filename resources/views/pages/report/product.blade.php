@@ -21,7 +21,7 @@
             </div>
         </div>
         <div class="col-md-12">
-            <x-data-table-two dataUrl="/report/product" id="productReports" :columns="$columns" />
+            <x-data-table dataUrl="/report/product" id="productReports" :columns="$columns" />
         </div>
     </div>
 </x-admin>

@@ -36,6 +36,10 @@ class Purchase extends Model
         $paid = PurchasePayment::where('purchase_id', $this->id)->sum('amount');
         return $paid;
     }
+    public function getDueAttribute()
+    {
+        return $this->grand_total - $this->paid;
+    }
     public function payments()
     {
         return $this->hasMany(PurchasePayment::class, 'purchase_id', 'id');

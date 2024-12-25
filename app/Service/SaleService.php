@@ -46,7 +46,7 @@ class SaleService
         try {
             // dd($data);
             $sale_data['created_at'] = $data['date'];
-            $sale_data['voucher_no'] = $this->voucher_no();;
+            $sale_data['voucher_no'] = $this->voucher_no();
             $sale_data['customer_id'] = $data['customer'];
             $sale_data['total_amount'] = $data['total_price'];
             $sale_data['discount'] = $data['discount_amount'];

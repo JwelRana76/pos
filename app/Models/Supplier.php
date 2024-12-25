@@ -27,12 +27,14 @@ class Supplier extends Model
     }
     public function getDueAttribute()
     {
-        // $purchase = Purchase::where('supplier_id', $this->id)->sum('grand_total') ?? 0;
-        // $payment = PurchasePyament::where('supplier_id', $this->id)->sum('amount') ?? 0;
-        $opening_due = Supplier::find($this->id)->opening_due ?? 0;
-        // $return = PurchaseReturn::where('supplier_id', $this->id)->sum('grand_total');
+        $purchase = Purchase::where('supplier_id', $this->id)->sum('grand_total') ?? 0;
+        $payment = PurchasePayment::where('supplier_id', $this->id)->sum('amount') ?? 0;
+        $opening_due = $this->opening_due ?? 0;
 
-        // return $purchase - $payment + $opening_due - $return;
-        return $opening_due;
+        return $purchase - $payment + $opening_due;
+    }
+    function getOpeningBalanceAttribute()
+    {
+        return $this->opening_due - $this->opening_due_paid;
     }
 }

@@ -1,8 +1,11 @@
 <x-admin title="Salary Payment">
   <x-page-header head="Salary Payment" />
   <div class="card p-3">
-    <x-form method="post" id="advancce_salary" action="{{ route('salary-payment.store') }}">
+    <x-form method="post" id="salary_payment" action="{{ route('salary-payment.store') }}">
     <div class="row">
+      <div class="col-md-6">
+        <x-input id="date" type="date" value="{{ date('Y-m-d') }}" max="{{ date('Y-m-d') }}" required/>
+      </div>
       <div class="col-md-6">
         <x-input id="month" type="month" value="{{ date('Y-m', strtotime('-1 month')) }}" max="{{ date('Y-m', strtotime('-1 month')) }}" required/>
       </div>
@@ -85,9 +88,10 @@
         function calculation(){
           var monthly_salary = parseFloat($('#monthly_salary').val());
           var advance_paid = parseFloat($('#advance_paid').val());
-          $('#total_salary').val(monthly_salary+advance_paid);
+          var due_salary = parseFloat($('#due_salary').val());
+          $('#total_salary').val(monthly_salary - advance_paid + due_salary);
         }
-        $('#paid').on('input', function () {
+        $('#salary_payment #paid').on('input', function () {
           var salary = parseFloat($('#total_salary').val());
           if(parseFloat($(this).val()) > salary){
             alert(`You can not pay more than ${salary}`);

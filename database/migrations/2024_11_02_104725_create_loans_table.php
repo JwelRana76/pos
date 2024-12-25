@@ -18,9 +18,10 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->string('contact')->nullable();
             $table->double('amount');
-            $table->float('interest')->comment('%');
+            $table->float('interest')->comment('%')->default(0);
             $table->text('note')->nullable();
             $table->double('total_interest')->default(0);
+            $table->boolean('loan_type')->comment('1=give/0=take');
             $table->softDeletes();
             $table->timestamps();
         });

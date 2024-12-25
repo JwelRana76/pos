@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('address');
             $table->string('image')->nullable();
             $table->double('opening_due')->default(0);
+            $table->double('opening_due_paid')->default(0);
             $table->softDeletes();
             $table->timestamps();
         });

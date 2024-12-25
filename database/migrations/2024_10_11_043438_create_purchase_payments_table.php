@@ -14,12 +14,13 @@ return new class extends Migration
         Schema::create('purchase_payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('supplier_id')->constrained('suppliers')->onDelete('cascade');
-            $table->foreignId('purchase_id')->constrained('purchases')->onDelete('cascade');
+            $table->foreignId('purchase_id')->nullable()->constrained('purchases')->onDelete('cascade');
             $table->foreignId('account_id')->nullable()->constrained('accounts')->onDelete('cascade');
             $table->foreignId('bank_id')->nullable()->constrained('banks')->onDelete('cascade');
             $table->boolean('payment_method')->comment('0=Cas/1=Bank');
             $table->double('amount');
             $table->text('note')->nullable();
+            $table->boolean('is_due')->default(false);
             $table->timestamps();
         });
     }

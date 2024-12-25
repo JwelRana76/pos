@@ -53,8 +53,8 @@
     <x-modal id="paymentModal">
         <x-form method="post" action="{{ route('customer.payment') }}">
             <div class="row mb-3">
-                <x-input id="sale_id" type="hidden" />
-                <x-input id="customer_id" type="hidden" />
+                <x-input id="voucher" type="hidden" />
+                <x-input id="customer" type="hidden" />
                 <div class="col-md-6">
                     <x-input type="date" id="date" value="{{ date('Y-m-d') }}" />
                 </div>
@@ -78,7 +78,7 @@
                     <x-select id="account" selectedId="1" :options="$accounts" />
                 </div>
                 <div class="col-md-6 d-none" id="bank_part">
-                    <x-select id="bank" :options="$banks" />
+                    <x-select id="bank" key="bank_name" :options="$banks" />
                 </div>
                 <div class="col-md-12">
                     <x-textarea id="note"/>
@@ -90,17 +90,17 @@
     </x-modal>
     @push('js')
         <script>
-            $('#payment_method').on('change', function () {
+            $('#paymentModal #payment_method').on('change', function () {
                 if($(this).val() == 0){
-                    $('#account_part').removeClass('d-none');
-                    $('#bank_part').addClass('d-none');
-                    $('#account').attr('required', 'true');
-                    $('#bank').removeAttr('required');
+                    $('#paymentModal #account_part').removeClass('d-none');
+                    $('#paymentModal #bank_part').addClass('d-none');
+                    $('#paymentModal #account').attr('required', 'true');
+                    $('#paymentModal #bank').removeAttr('required');
                 } else {
-                    $('#bank_part').removeClass('d-none');
-                    $('#account_part').addClass('d-none');
-                    $('#account').removeAttr('required');
-                    $('#bank').attr('required', 'true');
+                    $('#paymentModal #bank_part').removeClass('d-none');
+                    $('#paymentModal #account_part').addClass('d-none');
+                    $('#paymentModal #account').removeAttr('required');
+                    $('#paymentModal #bank').attr('required', 'true');
                 }
             });
         const table = $('#saleTable').dataTable({
@@ -285,8 +285,8 @@
                 function (data) {
                     $('#paymentModal').find('#payable').val(data.grand_total - data.paid);
                     $('#paymentModal').find('#current_due').val(data.grand_total - data.paid);
-                    $('#paymentModal').find('#sale_id').val(data.id);
-                    $('#paymentModal').find('#customer_id').val(data.customer_id);
+                    $('#paymentModal').find('#voucher').val(data.id);
+                    $('#paymentModal').find('#customer').val(data.customer_id);
                 }
             );
         })

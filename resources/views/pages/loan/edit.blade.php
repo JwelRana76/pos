@@ -19,7 +19,14 @@
           <x-input id="amount" value="{{ $loan->amount }}" required />
         </div>
         <div class="col-md-6">
-          <x-input id="interest" value="{{ $loan->interest }}" placeholder="enter interest %" required/>
+            <label for="loan_type">Loan Type</label>
+            <select name="loan_type" id="loan_type" class="form-control selectpicker" title="Select Loan Type">
+                <option value="1" {{ $loan->loan_type == 1?'selected':'' }}>Give (-)</option>
+                <option value="0" {{ $loan->loan_type == 0?'selected':'' }}>Take (+)</option>
+            </select>
+        </div>
+        <div class="col-md-6 d-none">
+          <x-input id="interest" value="{{ $loan->interest }}" placeholder="enter interest %" />
         </div>
         <div class="col-md-12">
           <x-text-area id='note' name="note" value="{{ $loan->note  }}" />
@@ -32,10 +39,28 @@
       </div>
       </x-form>
     </div>
+ @php
+        $accounts = App\Models\Account::select('name as name', 'id', 'account_no')
+            ->get()
+            ->append('balance');
+    @endphp
 
 @push('js')
   <script>
+    const accounts = @json($accounts);
     
+    $('#loan_form #amount').on('input', function () {
+        var account = $('#account').val();
+        var loan_type = $('#loan_type').val();
+        if(loan_type == 1){
+          var filteredBank = accounts.find(item => item.id == account);
+          var balance = parseFloat(filteredBank.balance);
+          if(parseFloat($(this).val()) > balance){
+            alert(`You can't Give more than ${balance}`);
+            $(this).val(balance);
+          }
+        }
+      });
   </script>
 @endpush
 </x-admin>

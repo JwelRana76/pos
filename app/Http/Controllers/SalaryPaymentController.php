@@ -50,7 +50,13 @@ class SalaryPaymentController extends Controller
     {
         $salary = SalaryPayment::findOrFail($id);
         $employees = Employee::select('name', 'id', 'contact')->get();
-        return view('pages.salary_payment.edit', compact('salary', 'employees'));
+        $banks = Bank::select('bank_name as name', 'id', 'account_no')
+        ->get()
+            ->append('balance');
+        $accounts = Account::select('name as name', 'id', 'account_no')
+        ->get()
+            ->append('balance');
+        return view('pages.salary_payment.edit', compact('salary', 'employees', 'accounts', 'banks'));
     }
     function update(Request $request, $id)
     {
@@ -62,6 +68,11 @@ class SalaryPaymentController extends Controller
     {
         SalaryPayment::findOrFail($id)->delete();
         return redirect()->route('salary-payment.index')->with('success', 'Paid Salary Deleted Successfully');
+    }
+    function receipt($id)
+    {
+        $salary = SalaryPayment::findOrFail($id);
+        return view('pages.salary_payment.receipt', compact('salary'));
     }
 
     function salary_details($month, $employee_id)

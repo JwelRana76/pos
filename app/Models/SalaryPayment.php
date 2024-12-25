@@ -12,6 +12,7 @@ class SalaryPayment extends Model
     protected $guarded = ['id'];
 
     public static $columns = [
+        ['name' => 'date', 'data' => 'date'],
         ['name' => 'month', 'data' => 'month'],
         ['name' => 'employee', 'data' => 'employee'],
         ['name' => 'monthly_salary', 'data' => 'monthly_salary'],

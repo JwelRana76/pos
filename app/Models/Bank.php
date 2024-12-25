@@ -17,10 +17,19 @@ class Bank extends Model
         ['name' => 'account_no', 'data' => 'account_no'],
         ['name' => 'bank_name', 'data' => 'bank_name'],
         ['name' => 'balance', 'data' => 'balance'],
+        ['name' => 'default', 'data' => 'default'],
         ['name' => 'action', 'data' => 'action'],
     ];
     public function getBalanceAttribute()
     {
-        return 1000;
+        $sale_payment = SalePayment::where('bank_id', $this->id)->sum('amount');
+        $invest = Invest::where('bank_id', $this->id)->sum('amount');
+        $purchase_payment = PurchasePayment::where('bank_id', $this->id)->sum('amount');
+        $salary_payment = SalaryPayment::where('bank_id', $this->id)->sum('amount');
+        $bank_deposit = BankTransection::where('bank_id', $this->id)->where('type', 1)->sum('amount');
+        $bank_withdraw = BankTransection::where('bank_id', $this->id)->where('type', 0)->sum('amount');
+
+
+        return $sale_payment + $bank_deposit - $bank_withdraw + $invest - $purchase_payment - $salary_payment;
     }
 }

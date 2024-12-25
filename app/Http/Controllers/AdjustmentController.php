@@ -16,6 +16,9 @@ class AdjustmentController extends Controller
     }
     public function index(Request $request)
     {
+        if (!userHasPermission('adjustment-index')) {
+            return view('404');
+        }
         $sale_returns = Adjustment::query()->orderBy('id', 'desc');
 
         if ($request->ajax()) {
@@ -37,32 +40,50 @@ class AdjustmentController extends Controller
     }
     public function create()
     {
+        if (!userHasPermission('adjustment-index')) {
+            return view('404');
+        }
         return view('pages.adjustment.create');
     }
     public function store(Request $request)
     {
+        if (!userHasPermission('adjustment-store')) {
+            return view('404');
+        }
         $data = $request->all();
         $message = $this->baseService->create($data);
         return redirect()->route('adjustment.index')->with($message);
     }
     function edit($id)
     {
+        if (!userHasPermission('adjustment-update')) {
+            return view('404');
+        }
         $adjustment = Adjustment::findOrFail($id);
         return view('pages.adjustment.edit', compact('adjustment'));
     }
     public function update(Request $request, $id)
     {
+        if (!userHasPermission('adjustment-update')) {
+            return view('404');
+        }
         $data = $request->all();
         $message = $this->baseService->update($data, $id);
         return redirect()->route('adjustment.index')->with($message);
     }
     function delete($id)
     {
+        if (!userHasPermission('adjustment-delete')) {
+            return view('404');
+        }
         Adjustment::findOrFail($id)->delete();
         return redirect()->route('adjustment.index')->with('success', 'Adjustment Deleted Successfully');
     }
     function show($id)
     {
+        if (!userHasPermission('adjustment-advance')) {
+            return view('404');
+        }
         $adjustment = Adjustment::with('user')->where('id', $id)->first();
         $items = ProductAdjustment::where('adjustment_id', $id)
             ->with(['product' => function ($query) {

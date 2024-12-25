@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AdjustmentController;
 use App\Http\Controllers\AdvanceSalaryController;
 use App\Http\Controllers\BankController;
+use App\Http\Controllers\BankTransectionController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
@@ -34,7 +35,8 @@ use App\Http\Controllers\SiteSettingController;
 use App\Http\Controllers\SizeController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UnitController;
-use App\Http\Controllers\UsersController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\VoucherSettingController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -65,14 +67,18 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [SiteSettingController::class, 'index'])->name('index');
         Route::post('/update/{id}', [SiteSettingController::class, 'update'])->name('update');
     });
+    Route::group(['prefix' => 'setting/voucher_setting', 'as' => 'voucher_setting.'], function () {
+        Route::get('/', [VoucherSettingController::class, 'index'])->name('index');
+        Route::post('/update/{id}', [VoucherSettingController::class, 'update'])->name('update');
+    });
     Route::group(['prefix' => 'setting/user', 'as' => 'user.'], function () {
-        Route::get('/', [UsersController::class, 'index'])->name('index');
-        Route::get('/edit/{id}', [UsersController::class, 'edit'])->name('edit');
-        Route::post('/store', [UsersController::class, 'store'])->name('store');
-        Route::get('/delete/{id}', [UsersController::class, 'delete'])->name('delete');
-        Route::post('/update/{id}', [UsersController::class, 'update'])->name('update');
-        Route::get('/assign_role/{id}', [UsersController::class, 'assign_role'])->name('role_assign');
-        Route::post('/assign_role', [UsersController::class, 'assign_role_store'])->name('role_assign_store');
+        Route::get('/', [UserController::class, 'index'])->name('index');
+        Route::post('/store', [UserController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [UserController::class, 'edit'])->name('edit');
+        Route::post('/update/{id}', [UserController::class, 'update'])->name('update');
+        Route::get('/delete/{id}', [UserController::class, 'delete'])->name('delete');
+        Route::get('/assign_role/{id}', [UserController::class, 'assign_role'])->name('role_assign');
+        Route::post('/assign_role', [UserController::class, 'assign_role_store'])->name('role_assign_store');
     });
     Route::group(['prefix' => 'setting/division', 'as' => 'division.'], function () {
         Route::get('/', [DivisionController::class, 'index'])->name('index');
@@ -122,12 +128,22 @@ Route::middleware('auth')->group(function () {
         Route::post('/store', [AccountController::class, 'store'])->name('store');
         Route::get('/edit/{id}', [AccountController::class, 'edit'])->name('edit');
         Route::get('/delete/{id}', [AccountController::class, 'delete'])->name('delete');
+        Route::post('/update-status', [AccountController::class, 'updateStatus'])->name('updateStatus');
     });
     Route::group(['prefix' => 'accounting/bank', 'as' => 'bank.'], function () {
         Route::get('/', [BankController::class, 'index'])->name('index');
         Route::post('/store', [BankController::class, 'store'])->name('store');
         Route::get('/edit/{id}', [BankController::class, 'edit'])->name('edit');
         Route::get('/delete/{id}', [BankController::class, 'delete'])->name('delete');
+        Route::post('/update-status', [BankController::class, 'updateStatus']);
+    });
+    Route::group(['prefix' => 'accounting/bank-transection', 'as' => 'bank_transection.'], function () {
+        Route::get('/', [BankTransectionController::class, 'index'])->name('index');
+        Route::get('/create', [BankTransectionController::class, 'create'])->name('create');
+        Route::post('/store', [BankTransectionController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [BankTransectionController::class, 'edit'])->name('edit');
+        Route::post('/update/{id}', [BankTransectionController::class, 'update'])->name('update');
+        Route::get('/delete/{id}', [BankTransectionController::class, 'delete'])->name('delete');
     });
     Route::group(['prefix' => 'income-category', 'as' => 'income-category.'], function () {
         Route::get('/', [IncomeCategoryController::class, 'index'])->name('index');
@@ -183,6 +199,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/edit/{id}', [ExpenseController::class, 'edit'])->name('edit');
         Route::get('/delete/{id}', [ExpenseController::class, 'delete'])->name('delete');
         Route::get('/pdelete/{id}', [ExpenseController::class, 'pdelete'])->name('pdelete');
+        Route::get('/receipt/{id}', [ExpenseController::class, 'receipt'])->name('receipt');
     });
 
     Route::group(['prefix' => 'customer', 'as' => 'customer.'], function () {
@@ -190,6 +207,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/trash', [CustomerController::class, 'trash'])->name('trash');
         Route::get('/create', [CustomerController::class, 'create'])->name('create');
         Route::post('/store', [CustomerController::class, 'store'])->name('store');
+        Route::post('/customerstore', [CustomerController::class, 'customerstore'])->name('customerstore');
         Route::get('/edit/{id}', [CustomerController::class, 'edit'])->name('edit');
         Route::get('/restore/{id}', [CustomerController::class, 'restore'])->name('restore');
         Route::post('/update/{id}', [CustomerController::class, 'update'])->name('update');
@@ -219,6 +237,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/trash', [SupplierController::class, 'trash'])->name('trash');
         Route::get('/create', [SupplierController::class, 'create'])->name('create');
         Route::post('/store', [SupplierController::class, 'store'])->name('store');
+        Route::post('/supplierstore', [SupplierController::class, 'supplierstore'])->name('supplierstore');
         Route::get('/edit/{id}', [SupplierController::class, 'edit'])->name('edit');
         Route::get('/restore/{id}', [SupplierController::class, 'restore'])->name('restore');
         Route::post('/update/{id}', [SupplierController::class, 'update'])->name('update');
@@ -265,6 +284,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/getProduct/', [PurchaseController::class, 'getProduct'])->name('getProduct');
         Route::get('/show/{id}', [PurchaseController::class, 'show'])->name('show');
         Route::get('/dueamount/{id}', [PurchaseController::class, 'dueamount']);
+        Route::get('/receipt/{id}', [PurchaseController::class, 'receipt'])->name('receipt');
     });
     Route::group(['prefix' => 'return-purchase', 'as' => 'purchase.return.'], function () {
         Route::get('/', [PurchaseReturnController::class, 'index'])->name('index');
@@ -326,6 +346,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/create', [SalaryPaymentController::class, 'create'])->name('create');
         Route::post('/store', [SalaryPaymentController::class, 'store'])->name('store');
         Route::get('/edit/{id}', [SalaryPaymentController::class, 'edit'])->name('edit');
+        Route::get('/receipt/{id}', [SalaryPaymentController::class, 'receipt'])->name('receipt');
         Route::post('/update/{id}', [SalaryPaymentController::class, 'update'])->name('update');
         Route::get('/delete/{id}', [SalaryPaymentController::class, 'delete'])->name('delete');
         Route::get('/salary_details/{month}/{employee_id}', [SalaryPaymentController::class, 'salary_details']);
@@ -359,10 +380,17 @@ Route::middleware('auth')->group(function () {
     });
     Route::group(['prefix' => 'report', 'as' => 'report.'], function () {
         Route::get('/product', [ReportController::class, 'productReport'])->name('product');
-        Route::get('/sale', [ReportController::class, 'saleReport'])->name('sale');
-        Route::get('/purchase', [ReportController::class, 'purchaseReport'])->name('purchase');
+        Route::get('/date-wise-sale', [ReportController::class, 'dateWiseSaleReport'])->name('datewisesale');
+        Route::get('/date-wise-purchase', [ReportController::class, 'dateWisePurchaseReport'])->name('datewisepurchase');
         Route::get('/income', [ReportController::class, 'incomeReport'])->name('income');
         Route::get('/expense', [ReportController::class, 'expenseReport'])->name('expense');
+        Route::get('/sale', [ReportController::class, 'saleReport'])->name('sale');
+        Route::get('/purchase', [ReportController::class, 'purchaseReport'])->name('purchase');
+        Route::get('/customer-ledger', [ReportController::class, 'customerLedgerReport'])->name('customerledger');
+        Route::get('/supplier-ledger', [ReportController::class, 'supplierLedgerReport'])->name('supplierledger');
+        Route::get('/bank', [ReportController::class, 'bank'])->name('bank');
+        Route::get('/account', [ReportController::class, 'account'])->name('account');
+        Route::get('/cashbook', [ReportController::class, 'cashbook'])->name('cashbook');
     });
 });
 

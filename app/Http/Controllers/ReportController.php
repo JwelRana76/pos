@@ -34,10 +34,10 @@ class ReportController extends Controller
         }
         return view('pages.report.product', compact('columns'));
     }
-    public function saleReport(Request $request)
+    public function dateWiseSaleReport(Request $request)
     {
         $data = $request->all();
-        $item = $this->baseService->saleReport($data);
+        $item = $this->baseService->dateWiseSaleReport($data);
         $columns =
             [
                 ['name' => 'date', 'data' => 'date'],
@@ -48,12 +48,12 @@ class ReportController extends Controller
         if (request()->ajax()) {
             return $item;
         }
-        return view('pages.report.sale', compact('columns'));
+        return view('pages.report.datewisesale', compact('columns'));
     }
-    public function purchaseReport(Request $request)
+    public function dateWisePurchaseReport(Request $request)
     {
         $data = $request->all();
-        $item = $this->baseService->purchaseReport($data);
+        $item = $this->baseService->dateWisePurchaseReport($data);
         $columns =
             [
                 ['name' => 'date', 'data' => 'date'],
@@ -64,7 +64,7 @@ class ReportController extends Controller
         if (request()->ajax()) {
             return $item;
         }
-        return view('pages.report.purchase', compact('columns'));
+        return view('pages.report.datewisepurchase', compact('columns'));
     }
     public function incomeReport(Request $request)
     {
@@ -95,5 +95,107 @@ class ReportController extends Controller
             return $item;
         }
         return view('pages.report.expense', compact('columns'));
+    }
+    public function saleReport(Request $request)
+    {
+        $data = $request->all();
+        $item = $this->baseService->saleReport($data);
+        $columns =
+            [
+                ['name' => 'date', 'data' => 'date'],
+                ['name' => 'invoice_no', 'data' => 'invoice_no'],
+                ['name' => 'amount', 'data' => 'amount'],
+                ['name' => 'paid', 'data' => 'paid'],
+                ['name' => 'due', 'data' => 'due'],
+            ];
+        if (request()->ajax()) {
+            return $item;
+        }
+        return view('pages.report.sale', compact('columns'));
+    }
+    public function purchaseReport(Request $request)
+    {
+        $data = $request->all();
+        $item = $this->baseService->purchaseReport($data);
+        $columns =
+            [
+                ['name' => 'date', 'data' => 'date'],
+                ['name' => 'invoice_no', 'data' => 'invoice_no'],
+                ['name' => 'amount', 'data' => 'amount'],
+                ['name' => 'paid', 'data' => 'paid'],
+                ['name' => 'due', 'data' => 'due'],
+            ];
+        if (request()->ajax()) {
+            return $item;
+        }
+        return view('pages.report.purchase', compact('columns'));
+    }
+    public function customerLedgerReport(Request $request)
+    {
+        $data = $request->all();
+        $item = $this->baseService->customerLedgerReport($data);
+        $columns =
+            [
+                ['name' => 'date', 'data' => 'date'],
+                ['name' => 'sale', 'data' => 'sale'],
+                ['name' => 'paid', 'data' => 'paid'],
+                ['name' => 'balance', 'data' => 'balance'],
+            ];
+        if (request()->ajax()) {
+            return $item;
+        }
+        return view('pages.report.customer_ledger', compact('columns'));
+    }
+    public function supplierLedgerReport(Request $request)
+    {
+        $data = $request->all();
+        $item = $this->baseService->supplierLedgerReport($data);
+        $columns =
+            [
+                ['name' => 'date', 'data' => 'date'],
+                ['name' => 'purchase', 'data' => 'purchase'],
+                ['name' => 'paid', 'data' => 'paid'],
+                ['name' => 'balance', 'data' => 'balance'],
+            ];
+        if (request()->ajax()) {
+            return $item;
+        }
+        return view('pages.report.supplier_ledger', compact('columns'));
+    }
+    public function bank(Request $request)
+    {
+        $data = $request->all();
+        $item = $this->baseService->bank($data);
+        $columns =
+            [
+                ['name' => 'date', 'data' => 'date'],
+                ['name' => 'credit', 'data' => 'credit'],
+                ['name' => 'debit', 'data' => 'debit'],
+                ['name' => 'balance', 'data' => 'balance'],
+            ];
+        if (request()->ajax()) {
+            return $item;
+        }
+        return view('pages.report.bank_report', compact('columns'));
+    }
+    public function account(Request $request)
+    {
+        $data = $request->all();
+        $item = $this->baseService->account($data);
+        $columns =
+            [
+                ['name' => 'date', 'data' => 'date'],
+                ['name' => 'credit', 'data' => 'credit'],
+                ['name' => 'debit', 'data' => 'debit'],
+                ['name' => 'balance', 'data' => 'balance'],
+            ];
+        if (request()->ajax()) {
+            return $item;
+        }
+        return view('pages.report.account_report', compact('columns'));
+    }
+    public function cashbook(Request $request)
+    {
+        return view('pages.report.cashbook');
     }
 }
